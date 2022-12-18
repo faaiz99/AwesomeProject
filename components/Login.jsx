@@ -32,7 +32,7 @@ try {
     setAccessToken(result.accessToken)
     setRefreshToken(result.refreshToken)
     console.log(result.accessToken)
-    navigation.navigate('Home', {
+    navigation.navigate('Root', {
       aToken: accessToken,
       rToken: refreshToken
     })

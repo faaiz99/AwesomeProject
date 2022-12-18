@@ -3,33 +3,34 @@ import React from 'react'
 import {Text, View} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-function HomeScreen() {
+import Search from './Search';
+function Home({navigation, route}) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
+      <Text>Home</Text>
     </View>
   );
 }
 
-function SettingsScreen() {
+function Library({navigation}) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
+      <Text>Library</Text>
     </View>
   );
 }
 const Tab = createBottomTabNavigator();
 
-const Home = ({navigation}) => {
+const Root = ({navigation, route}) => {
+  const {accessT, refreshT} = route.params
+  console.log(route.params)
   return (
-    <NavigationContainer>
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="Search" component={Search} />
+      <Tab.Screen name="Library" component={Library} />
     </Tab.Navigator>
-  </NavigationContainer>
   )
 }
 
-export default Home
+export default Root
