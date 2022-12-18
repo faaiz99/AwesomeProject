@@ -1,32 +1,49 @@
 
-import React from 'react'
-import {Text, View} from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
+import React, {useEffect} from 'react'
+import { Text, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Search from './Search';
-function Home({navigation, route}) {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home</Text>
-    </View>
-  );
-}
+import Library from './Library';
+import Home from './Home';
+import axios from "axios";
+import Icon from 'react-native-vector-icons';
 
-function Library({navigation}) {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Library</Text>
-    </View>
-  );
-}
 const Tab = createBottomTabNavigator();
 
-const Root = ({navigation, route}) => {
-  const {accessT, refreshT} = route.params
-  console.log(route.params)
+const Root = ({ navigation, route }) => {
+  const { accessToken, typeToken, refreshToken } = route.params
+
+  useEffect(() => {
+    if (accessToken) {
+      axios("https://api.spotify.com/v1/me/top/tracks?time_range=short_term", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+        .then((response) => {
+            // console.log(response)
+        })
+        .catch((error) => {
+          console.log("error", error.message);
+        });
+
+      // setTimeout(
+      //   () =>
+      //     navigation.replace("Home", {
+      //       token: token,
+      //     }),
+      //   500
+      // );
+
+    }
+  })
+
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={Home} initialParams = {{token:accessToken, refreshToken:refreshToken}}/>
       <Tab.Screen name="Search" component={Search} />
       <Tab.Screen name="Library" component={Library} />
     </Tab.Navigator>
