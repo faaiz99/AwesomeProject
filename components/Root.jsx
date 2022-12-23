@@ -2,10 +2,8 @@
 import React, {useEffect} from 'react'
 import { Text, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Search from './Search';
 import Library from './Library';
 import Home from './Home';
-import axios from "axios";
 import SearchScreen from '../screens/SearchScreen'
 import Icon from 'react-native-vector-icons';
 
