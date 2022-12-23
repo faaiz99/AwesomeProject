@@ -1,10 +1,19 @@
-import * as React from 'react';
-import { TouchableOpacity, View, Text, ImageBackground } from 'react-native';
-
+import {View,ImageBackground } from 'react-native';
+import auth from "@react-native-firebase/auth";
+import { useEffect } from 'react';
 const SplashScreen = ({ navigation }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      // Check if currentUser is set or not
+      // If not then send for Authentication
+      // else send to Home Screen
+      navigation.replace(
+        auth().currentUser ? "Root" : "Login"
+      );
+    }, 1000);
+  }, []);
   return (
     <View style={{ backgroundColor: '#1b1413',height:'100%',width:'100%' }}>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <ImageBackground
           style={{
             width: 200,
@@ -16,7 +25,6 @@ const SplashScreen = ({ navigation }) => {
           resizeMode="contain"
           source={require('../assets/images/Spotify_App_Logo.svg.png')}
         />
-      </TouchableOpacity>
     </View>
   );
 };
