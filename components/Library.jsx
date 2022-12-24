@@ -1,68 +1,208 @@
-import { View, Text, Button, PermissionsAndroid } from 'react-native'
-import React, {useState} from 'react'
-import auth from '@react-native-firebase/auth';
-import { utils } from '@react-native-firebase/app';
-import storage from '@react-native-firebase/storage';
-import FilePicker from 'react-native-document-picker';
+import React from 'react';
+import {
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  TextInput,
+  ImageBackground,
+  SafeAreaView,
+  FlatList,
+  Provider as PaperProvide,
+  Appbar
+} from 'react-native';
+import {useState} from 'react';
+import { Provider as PaperProvider } from 'react-native-paper';
 
-const Library = ({navigation, route}) => {
-  const [song, setSong] = useState(null);
-  const reference = storage().ref('song');
 
 
-  //Get current user through authentication
-  const user = auth.currentUser;
-  let result
-  const pickDocument = async () => {
-     result = await FilePicker.pick({
-      presentationStyle:'fullScreen',
-      allowMultiSelection:true,
-      copyTo:'cachesDirectory'
-    })
-    // Fetch the photo with it's local URI
-    console.log(result);
+const DATA = [
+  {
+    index: '1',
+    id: '23465433',
+    title: 'Prisoner',
+    number: '2,344,55',
+  },
+  {
+    index: '2',
+    id: '23465434',
+    title: 'Prisoner',
+    number: '2,344,55',
+  },
+  {
+    index: '3',
+    id: '23465435',
+    title: 'Prisoner',
+    number: '2,344,55',
+  },
+  {
+    index: '4',
+    id: '23465436',
+    title: 'Prisoner',
+    number: '2,344,55',
+  },
+  {
+    index: '5',
+    id: '23465437',
+    title: 'Prisoner',
+    number: '2,344,55',
+  },
+  
+];
 
-    // const response = fetch(result.uri);
+const Item = ({item, onPress, backgroundColor, textColor}) => {
+  return (
+    <TouchableOpacity onPress={onPress} >
+      <View style={styles.songs}>
+        <Text style={{color: 'white'}}>{item.index}</Text>
+        <View style={{marginLeft: '2%'}}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>{item.title}</Text>
+          <Text style={{color: 'gray'}}>{item.number}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
-    // const file = new Blob(
-    //   [response.value], {
-    //     type: 'audio/mpeg'
-    //   });
-    // console.log('do we see this?');
+export default function Library() {
+  const [selectedId, setSelectedId] = useState('');
 
-    // try {
-    //   //Create the file reference
-    //   const storage = getStorage();
-    //   const storageRef = ref(storage, `songs/${user.uid}/${result.name}`);
+  const renderItem = ({item}) => {
+    const backgroundColor = item.id === selectedId ? 'white' : 'black';
+    const textColor = item.id === selectedId ? 'black' : 'white';
+    // console.log(backgroundColor)
+    return (
+      <Item
+        item={item}
+        onPress={() => setSelectedId(item.id)}
+        backgroundColor={{backgroundColor}}
+        color={{textColor}}
+      />
+    );
+  };
 
-    //   // Upload Blob file to Firebase
-    //   const snapshot = uploadBytes(storageRef, file, 'blob').then((snapshot) => {
-    //     console.log('Uploaded a song to firebase storage!');
-    //   });
-
-    //   setSong(result.uri);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
-  }
   return (
     <View>
-      <Text>Library</Text>
-      <Button onPress={pickDocument} title="select"/>
-      <Button
-        title='upload'
-        onPress={async () => {
-          // path to existing file on filesystem
-          console.log("Path", result[0].uri)
-          const pathToFile = result[0].fileCopyUri;
-          console.log(pathToFile)
-          // uploads file
-          await reference.putFile(pathToFile);
-        }}
-      />
+      <View style={{backgroundColor: 'orange', height: '20%'}}>
+        <ImageBackground
+          style={{flex: 1, height: '100%', width: '100%'}}
+          source={require('../assets/images/sigin.jpg')}>
+          <View style={styles.textView}>
+            <Text style={{color: 'white', fontSize: 30}}>
+              Dance Mateen Dance
+            </Text>
+          </View>
+        </ImageBackground>
+      </View>
+      <View style={styles.container1}>
+        <View style={{padding: '6%', alignItems: 'center'}}>
+          <Text style={{color: 'gray'}}>1,03,234 MONTHLY LISTENERS</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              SHUFFLE PLAY
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ height:"32%"}}>
+          <Text
+            style={{
+              color: 'white',
+              textAlign: 'center',
+              fontSize: 25,
+              fontWeight: 'bold',
+            }}>
+            Popular
+          </Text>
+          <SafeAreaView style={{height:"90%"}}>
+            <FlatList
+              data={DATA}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+            />
+          </SafeAreaView>
+        </View>
+        <View >
+          <Text
+            style={{
+              color: 'white',
+              textAlign: 'center',
+              fontSize: 25,
+              fontWeight: 'bold',
+            }}>
+            Artist's Pick
+          </Text>
+          <View style={{flexDirection:"row"}}>
+            <View
+              style={{height: '45%', width: '33%', backgroundColor: 'orange'}}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={require('../assets/images/sigin.jpg')}></Image>
+            </View>
+
+            <View style={styles.artist}>
+              <TouchableOpacity style={styles.button2}>
+                <Text style={{textAlign: 'center'}}>New SONG out now!</Text>
+              </TouchableOpacity>
+              <Text style={{color: 'white', marginLeft:"8%"}}>Strawberry's Wake</Text>
+            </View>
+          </View>
+        </View>
+      </View>
     </View>
-  )
+  );
 }
 
-export default Library
+const styles = StyleSheet.create({
+  textView: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: '5%',
+    marginBottom: '2%',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
+  container1: {
+    backgroundColor: 'black',
+  },
+
+  text: {
+    color: 'white',
+  },
+
+  songs: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: '3%',
+  },
+
+  button: {
+    backgroundColor: 'green',
+    width: '60%',
+    color: 'white',
+    fontWeight: 'bold',
+    padding: '3%',
+    borderRadius: 20,
+    margin: '3%',
+  },
+
+  button2: {
+    backgroundColor: 'white',
+    width: '80%',
+    color: 'black',
+    fontWeight: 'bold',
+    padding: '2%',
+    borderRadius: 20,
+    margin: '5%',
+  },
+
+  artist: {
+    flexDirection: 'column',
+    // backgroundColor: "pink"
+  },
+});
