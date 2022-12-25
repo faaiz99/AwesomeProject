@@ -1,7 +1,10 @@
-import {View,ImageBackground } from 'react-native';
+import {View,ImageBackground, StatusBar } from 'react-native';
 import auth from "@react-native-firebase/auth";
+import SystemNavigationBar from 'react-native-system-navigation-bar';
+
 import { useEffect } from 'react';
 const SplashScreen = ({ navigation }) => {
+  SystemNavigationBar.setNavigationColor('#140c0b');
   useEffect(() => {
     setTimeout(() => {
       // Check if currentUser is set or not
@@ -13,7 +16,7 @@ const SplashScreen = ({ navigation }) => {
     }, 1000);
   }, []);
   return (
-    <View style={{ backgroundColor: '#1b1413',height:'100%',width:'100%' }}>
+    <View style={{ backgroundColor: '#140c0b',height:'100%',width:'100%' }}>
         <ImageBackground
           style={{
             width: 200,
@@ -25,6 +28,9 @@ const SplashScreen = ({ navigation }) => {
           resizeMode="contain"
           source={require('../assets/images/Spotify_App_Logo.svg.png')}
         />
+        <StatusBar
+        animated={true}
+        backgroundColor="#140c0b"/>
     </View>
   );
 };

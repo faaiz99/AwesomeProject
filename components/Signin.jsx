@@ -6,21 +6,21 @@ import {
   StyleSheet,
   TextInput,
   ImageBackground,
+  StatusBar
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import {useState} from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Signup from './Signup'
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
+SystemNavigationBar.setNavigationColor('black');
 
 const Stack = createNativeStackNavigator();
 
-export default Signin=({navigation})=>{
+export default Signin = ({ navigation }) => {
   const [getEmail, setEmail] = useState("")
   const [getPassword, setPassword] = useState("")
   const [visible, setVisible] = useState(true)
-  const [authenticated, setAuthenticated] = useState(false);
 
   const loginUser = () => {
     auth()
@@ -36,17 +36,20 @@ export default Signin=({navigation})=>{
       });
   }
   return (
-    <View style={{flexDirection: 'column'}}>
-      <View style={{backgroundColor: 'orange', height: '35%'}}>
+    <View style={{ flexDirection: 'column' }}>
+                 <StatusBar
+        animated={true}
+        backgroundColor="black"/>
+      <View style={{ backgroundColor: 'orange', height: '35%' }}>
         <ImageBackground
-          style={{flex: 1, height: '100%', width: '100%'}}
-          source={require('../assets/images/sigin.jpg')}>
+          style={{ flex: 1, height: '100%', width: '100%' }}
+          source={require('../assets/images/Header.jpg')}>
           <View style={styles.textView}>
-            <Text style={{color: 'white', fontSize: 30}}>Sign In</Text>
-            <Text style={{color: 'white'}}>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: "900" }}>Sign In</Text>
+            <Text style={{ color: 'white' }}>
               Welcome Back! It's time to listen what
             </Text>
-            <Text style={{color: 'white'}}>
+            <Text style={{ color: 'white' }}>
               you want and enjoy the music...
             </Text>
           </View>
@@ -55,7 +58,7 @@ export default Signin=({navigation})=>{
 
       <View style={styles.container1}>
         <View style={styles.container3}>
-          <View style={{width: '100%'}}>
+          <View style={{ width: '100%' }}>
             <View style={styles.box}>
               <TouchableOpacity>
                 {/* <Text>Email Address:</Text> */}
@@ -68,27 +71,32 @@ export default Signin=({navigation})=>{
               <TouchableOpacity>
                 <TextInput
                   placeholder="Password:"
-                  secureTextEntry={true}
+                  secureTextEntry={visible}
                   onChangeText={e => setPassword(e)}></TextInput>
+                <Icon name='eye' size={15} color="black" onPress={()=>setVisible(!visible)} style={{
+                  position: 'absolute',
+                  right: 20,
+                  marginTop:15
+                }} />
               </TouchableOpacity>
             </View>
             <View style={styles.text}>
-              <Text style={{color: 'green'}}>Forget Password?</Text>
+              <Text style={{ color: '#1DB954' }}>Forget Password?</Text>
             </View>
           </View>
           <View style={styles.button}>
             <TouchableOpacity onPress={loginUser}>
-              <Text style={{textAlign: 'center'}}>Sign in</Text>
+              <Text style={{ textAlign: 'center', color: "white", fontWeight: "900" }}>Sign in</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Text style={{color: 'white'}}>Create an account? </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <Text style={{ color: 'white' }}>Create an account? </Text>
             <TouchableOpacity onPress={() =>
-                        navigation.navigate('Signup')}>
-              <Text style={{color: 'green'}}>Sign up</Text>
+              navigation.navigate('Signup')}>
+              <Text style={{ color: '#1DB954', fontWeight: "bold" }}> Sign up</Text>
             </TouchableOpacity>
-            
+
           </View>
         </View>
       </View>
@@ -102,8 +110,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     marginTop: '1%',
-    // justifyContent: 'center',
-    // padding: "1%"
   },
 
   container2: {
@@ -133,10 +139,9 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: 'green',
+    backgroundColor: '#1DB954',
     padding: '4%',
     borderRadius: 10,
-    // marginTop: '4%',
     width: '70%',
     justifyContent: 'center',
     alignItems: 'center',
