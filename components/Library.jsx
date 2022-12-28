@@ -83,7 +83,7 @@ export default function Library() {
 
   return (
     <View>
-      <View style={{backgroundColor: 'orange', height: '20%'}}>
+      {/* <View style={{backgroundColor: 'orange', height: '20%'}}>
         <ImageBackground
           style={{flex: 1, height: '100%', width: '100%'}}
           source={require('../assets/images/Header.jpg')}>
@@ -147,7 +147,7 @@ export default function Library() {
             </View>
           </View>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }

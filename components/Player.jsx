@@ -17,22 +17,7 @@ const Player = () => {
     const [repeat, setRepeat] = useState(false)
     const [random, setRandom] = useState(false)
 
-    async function play() {
-        try {
-            const reference = storage().ref('Kesariya - Brahmastra 128 Kbps.mp3');
-
-            var path = await reference.getDownloadURL()
-            SoundPlayer.loadUrl(path)
-            var time = await SoundPlayer.getInfo()
-            console.log(time.currentTime)
-            setSongLength(Math.floor(time.duration / 60))
-            setPlaying(true)
-
-            SoundPlayer.play()
-        } catch (e) {
-            console.log(`cannot play the sound file`, e)
-        }
-    }
+   
     const pause = async () => {
         try {
             setPlaying(false)
@@ -47,21 +32,37 @@ const Player = () => {
         SoundPlayer.resume()
 
     }
-    useEffect(() => {
-
-        //play()
-        const songStartInterval = setInterval(() => {
-            setSongDuration((t) => t + 0.1);
-        }, 1000);
-        return () => {
-            clearInterval(songStartInterval);
-        };
-    }, [])
+    // useEffect(()=>{
+    //     async function play() {
+    //         try {
+    //             const reference = storage().ref('Kesariya - Brahmastra 128 Kbps.mp3');
+    //             var path = await reference.getDownloadURL()
+    //             SoundPlayer.loadUrl(path)
+    //             var time = await SoundPlayer.getInfo()
+    //             console.log(time)
+    //             setSongLength(Math.floor(time.duration / 60))
+    //             SoundPlayer.play()
+    //             setPlaying(true)
+    //         } catch (e) {
+    //             console.log(`cannot play the sound file`, e)
+    //         }
+    //     }
+    //     play()
+    // },[])
+    // useEffect( () => {
+    //     const songStartInterval = setInterval(async() => {
+    //         var time = await SoundPlayer.getInfo()
+    //         console.log((time.currentTime/60).toFixed(2))
+    //         setSongDuration((time.currentTime/60).toFixed(1))          
+    //     }, 1000);
+    //     return () => {
+    //         clearInterval(songStartInterval);
+    //     };
+    // },[playing])
 
     return (<>
         <View>
-            <Text>{songDuration}</Text>
-            <Text>{playing} Hello</Text>
+
             <Slider
                 style={{ height: 40, backgroundColor: "black" }}
                 minimumValue={0}
@@ -80,10 +81,10 @@ const Player = () => {
         </View>
         <View style={styles.controls}>
             <View>{
-                random?      <Icon name='random' size={30} color="white" onPress={()=>setRandom(!random)} />: <Icon name='random' size={30} color="grey" onPress={()=>setRandom(!random)} />
+                random ? <Icon name='random' size={30} color="white" onPress={() => setRandom(!random)} /> : <Icon name='random' size={30} color="grey" onPress={() => setRandom(!random)} />
             }
             </View>
-       
+
             <Icon name='step-backward' size={30} color="white" onPress={{}} />
             <View>
                 {
@@ -92,7 +93,7 @@ const Player = () => {
             </View>
             <Icon name='step-forward' size={30} color="white" onPress={{}} />
             <View>{
-                repeat ? <Icon name='retweet' size={30} color="white" onPress={()=>setRepeat(!repeat)} /> : <Icon name='retweet' size={30} color="grey" onPress={()=>setRepeat(!repeat)} />
+                repeat ? <Icon name='retweet' size={30} color="white" onPress={() => setRepeat(!repeat)} /> : <Icon name='retweet' size={30} color="grey" onPress={() => setRepeat(!repeat)} />
             }
             </View>
 

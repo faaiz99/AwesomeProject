@@ -1,6 +1,5 @@
 
 import React, { useEffect } from 'react'
-import { Text, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Library from './Library';
 import Home from './Home';
@@ -12,7 +11,6 @@ import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 
 const Tab = createBottomTabNavigator();
-
 const Root = ({ navigation, route }) => {
   useEffect(() => {
     SystemNavigationBar.setNavigationColor('black');

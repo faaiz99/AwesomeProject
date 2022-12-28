@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Player from './Player';
 
 const Home = ({ navigation, route }) => {
