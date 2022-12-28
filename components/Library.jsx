@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
   StyleSheet,
   Image,
@@ -14,7 +13,6 @@ import {
   Appbar
 } from 'react-native';
 import {useState} from 'react';
-import { Provider as PaperProvider } from 'react-native-paper';
 
 
 
@@ -85,10 +83,10 @@ export default function Library() {
 
   return (
     <View>
-      <View style={{backgroundColor: 'orange', height: '20%'}}>
+      {/* <View style={{backgroundColor: 'orange', height: '20%'}}>
         <ImageBackground
           style={{flex: 1, height: '100%', width: '100%'}}
-          source={require('../assets/images/sigin.jpg')}>
+          source={require('../assets/images/Header.jpg')}>
           <View style={styles.textView}>
             <Text style={{color: 'white', fontSize: 30}}>
               Dance Mateen Dance
@@ -138,7 +136,7 @@ export default function Library() {
               style={{height: '45%', width: '33%', backgroundColor: 'orange'}}>
               <Image
                 style={{height: '100%', width: '100%'}}
-                source={require('../assets/images/sigin.jpg')}></Image>
+                source={require('../assets/images/Header.jpg')}></Image>
             </View>
 
             <View style={styles.artist}>
@@ -149,7 +147,7 @@ export default function Library() {
             </View>
           </View>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }
