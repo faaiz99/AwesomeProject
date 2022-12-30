@@ -7,10 +7,13 @@ import Signin from './components/Signin'
 import Signup from './components/Signup';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as RNFS from 'react-native-fs';
+
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
   return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName='Splash'>
