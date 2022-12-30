@@ -1,105 +1,127 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, Button, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import storage from '@react-native-firebase/storage';
-import SoundPlayer from 'react-native-sound-player'
 import Slider from '@react-native-community/slider';
-import { VolumeManager } from 'react-native-volume-manager';
+import { useProgress } from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
+import { SetupService } from '../setupPlayer';
+import getSongs from '../getTracks'
 
 
+const track3 = {
+    id: 'track3',
+    url:'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+    title: 'Track 1',
+    artist: 'Artist 1',
+};
+const track2 = {
+    id: 'track2',
+    url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+    title: 'Track 1',
+    artist: 'Artist 1',
+};
+
+const track1 = {
+    id: 'StorageSong',
+    url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+    title: 'AA Jaana',
+    artist: 'Artist 1',
+};
 
 
-
-const Player = () => {
-    const [playing, setPlaying] = useState(false)
-    const [songDuration, setSongDuration] = useState(0)
-    const [songLength, setSongLength] = useState(0)
+const Player = ({ route }) => {
+    const [track, setTrack] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const { position, duration } = useProgress()
+    const [isPlayerReady, setIsPlayerReady] = useState(false);
     const [repeat, setRepeat] = useState(false)
     const [random, setRandom] = useState(false)
+    const [songsList, setSongsList] = useState(null)
 
-   
-    const pause = async () => {
-        try {
-            setPlaying(false)
-            SoundPlayer.pause()
-
-        } catch (e) {
-            console.log(e)
+    useEffect(() => {
+        async function run() {
+            const isSetup = await SetupService();
+            setIsPlayerReady(isSetup);
+      
+           TrackPlayer.add([track2, track3, track1])
         }
-    }
-    const resume = async () => {
-        setPlaying(true)
-        SoundPlayer.resume()
+        run();
+    }, []);
 
-    }
-    // useEffect(()=>{
-    //     async function play() {
-    //         try {
-    //             const reference = storage().ref('Kesariya - Brahmastra 128 Kbps.mp3');
-    //             var path = await reference.getDownloadURL()
-    //             SoundPlayer.loadUrl(path)
-    //             var time = await SoundPlayer.getInfo()
-    //             console.log(time)
-    //             setSongLength(Math.floor(time.duration / 60))
-    //             SoundPlayer.play()
-    //             setPlaying(true)
-    //         } catch (e) {
-    //             console.log(`cannot play the sound file`, e)
-    //         }
-    //     }
-    //     play()
-    // },[])
-    // useEffect( () => {
-    //     const songStartInterval = setInterval(async() => {
-    //         var time = await SoundPlayer.getInfo()
-    //         console.log((time.currentTime/60).toFixed(2))
-    //         setSongDuration((time.currentTime/60).toFixed(1))          
-    //     }, 1000);
-    //     return () => {
-    //         clearInterval(songStartInterval);
+    const showMusicList = async() => {
+    //     var songs = await getSongs()
+    //     // console.log(songs)
+    //     const track1 = {
+    //         id: 'StorageSong',
+    //         url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+    //         title: 'AA Jaana',
+    //         artist: 'Artist 1',     
     //     };
-    // },[playing])
+    //    TrackPlayer.add([track1])
+    //    //await TrackPlayer.getTrack()
+    //    console.log( await TrackPlayer.getTrack() )
+ 
+    //     console.log("Queue",await TrackPlayer.getQueue())
+    console.log("HEHE")
+  
+      
+    }
 
-    return (<>
+
+
+    return (
         <View>
-
-            <Slider
-                style={{ height: 40, backgroundColor: "black" }}
-                minimumValue={0}
-                maximumValue={songLength}
-                minimumTrackTintColor="#1DB954"
-                maximumTrackTintColor="white"
-                thumbTintColor="white"
-                value={songDuration}
-                onValueChange={async (e) => {
-                    setSongDuration(e)
-                    SoundPlayer.seek(songDuration * 60)
-                    console.log(await SoundPlayer.getInfo())
-                    setPlaying(true)
-                }}
-            />
-        </View>
-        <View style={styles.controls}>
-            <View>{
-                random ? <Icon name='random' size={30} color="white" onPress={() => setRandom(!random)} /> : <Icon name='random' size={30} color="grey" onPress={() => setRandom(!random)} />
-            }
-            </View>
-
-            <Icon name='step-backward' size={30} color="white" onPress={{}} />
+            <Button title='Show List' onPress={showMusicList} />
             <View>
-                {
-                    playing ? <Icon name='pause' size={60} color="white" onPress={pause} /> : <Icon name='play' size={60} color="white" onPress={resume} />
-                }
-            </View>
-            <Icon name='step-forward' size={30} color="white" onPress={{}} />
-            <View>{
-                repeat ? <Icon name='retweet' size={30} color="white" onPress={() => setRepeat(!repeat)} /> : <Icon name='retweet' size={30} color="grey" onPress={() => setRepeat(!repeat)} />
-            }
-            </View>
 
+                <Slider
+                    style={{ height: 40, backgroundColor: "black" }}
+                    minimumTrackTintColor="#1DB954"
+                    maximumTrackTintColor="white"
+                    thumbTintColor="white"
+                    minimumValue={0}
+                    maximumValue={duration}
+                    value={position}
+                    onSlidingComplete={value => {
+                        TrackPlayer.pause();
+                        TrackPlayer.seekTo(value)
+                        TrackPlayer.play();
+                    }}
+                />
+                <View style={styles.time}>
+                    <Text style={styles.timeFont}> {position.toFixed(0)}{"s"}</Text>
+                    <Text style={styles.timeFont}>{duration.toFixed(0)}{"s"}</Text>
+                </View>
+            </View>
+            <View style={styles.controls}>
+                <View>{
+                    random ? <Icon name='random' size={30} color="white" onPress={() => setRandom(!random)} /> : <Icon name='random' size={30} color="grey" onPress={() => setRandom(!random)} />
+                }
+                </View>
+
+                <Icon name='step-backward' size={30} color="white" onPress={() => TrackPlayer.skipToPrevious()} />
+                <View>
+                    {
+                        isPlaying ? <Icon name='pause' size={60} color="white" onPress={() => {
+                            TrackPlayer.pause()
+                            setIsPlaying(false)
+
+                        }} /> : <Icon name='play' size={60} color="white" onPress={() => {
+                            TrackPlayer.play()
+                            setIsPlaying(true)
+                        }} />
+                    }
+                </View>
+                <Icon name='step-forward' size={30} color="white" onPress={() => TrackPlayer.skipToNext()} />
+                <View>{
+                    repeat ? <Icon name='retweet' size={30} color="white" onPress={() => setRepeat(!repeat)} /> : <Icon name='retweet' size={30} color="grey" onPress={() => setRepeat(!repeat)} />
+                }
+                </View>
+
+            </View>
         </View>
-    </>
-    )
+    );
+
 }
 const styles = StyleSheet.create({
     controls: {
@@ -107,8 +129,15 @@ const styles = StyleSheet.create({
         justifyContent: "space-evenly",
         backgroundColor: "black",
         alignItems: "center",
-
     },
+    time: {
+        justifyContent: "space-between",
+        flexDirection: "row",
+        backgroundColor: "black"
+    },
+    timeFont: {
+        color: "white",
+    }
 
 })
 
