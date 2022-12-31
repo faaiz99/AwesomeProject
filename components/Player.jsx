@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, Button, TouchableOpacity, ActivityIndicator, SafeAreaView, PermissionsAndroid, Alert } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
@@ -10,13 +10,13 @@ import getSongs from '../getTracks'
 
 const track3 = {
     id: 'track3',
-    url:'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+    url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
     title: 'Track 1',
     artist: 'Artist 1',
 };
 const track2 = {
     id: 'track2',
-    url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+    url: 'file:///storage/emulated/0/Music/aajana.mp3',
     title: 'Track 1',
     artist: 'Artist 1',
 };
@@ -38,32 +38,44 @@ const Player = ({ route }) => {
     const [random, setRandom] = useState(false)
     const [songsList, setSongsList] = useState(null)
 
+
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
             setIsPlayerReady(isSetup);
-      
-           TrackPlayer.add([track2, track3, track1])
+
+            TrackPlayer.add([track2, track3, track1])
+            if (Platform.OS === 'android') {
+                isReadGranted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                );
+            }
+            if (isReadGranted === PermissionsAndroid.RESULTS.GRANTED) {
+                //TODO
+                console.log("Permission Granted")
+            }
+            else {
+                Alert.alert("Storage Read Permission Required")
+            }
         }
         run();
     }, []);
 
-    const showMusicList = async() => {
-    //     var songs = await getSongs()
-    //     // console.log(songs)
-    //     const track1 = {
-    //         id: 'StorageSong',
-    //         url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
-    //         title: 'AA Jaana',
-    //         artist: 'Artist 1',     
-    //     };
-    //    TrackPlayer.add([track1])
-    //    //await TrackPlayer.getTrack()
-    //    console.log( await TrackPlayer.getTrack() )
- 
-    //     console.log("Queue",await TrackPlayer.getQueue())
-    console.log("HEHE")
-  
+    const showMusicList = async () => {
+        //     var songs = await getSongs()
+        //     // console.log(songs)
+        //     const track1 = {
+        //         id: 'StorageSong',
+        //         url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
+        //         title: 'AA Jaana',
+        //         artist: 'Artist 1',     
+        //     };
+        //    TrackPlayer.add([track1])
+        //    //await TrackPlayer.getTrack()
+        //    console.log( await TrackPlayer.getTrack() )
+
+        //     console.log("Queue",await TrackPlayer.getQueue())
+        console.log("HEHE")  
       
     }
 
@@ -72,6 +84,7 @@ const Player = ({ route }) => {
     return (
         <View>
             <Button title='Show List' onPress={showMusicList} />
+            <Text>{track}</Text>
             <View>
 
                 <Slider
