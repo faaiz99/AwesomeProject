@@ -6,13 +6,25 @@ import Home from './Home';
 import SearchScreen from '../screens/SearchScreen'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
+import { Button, Text, TouchableOpacity, StyleSheet, Pre } from 'react-native';
 
-
+function MyTabBar({ navigation }) {
+  return (
+    <Button
+      title="Player"
+      onPress={() => {
+        // Navigate using the `navigation` prop that you received
+        navigation.navigate('SomeScreen');
+      }}
+    />
+  );
+}
 
 
 
 const Tab = createBottomTabNavigator();
 const Root = ({ navigation, route }) => {
+
 
  
   useEffect(() => {
@@ -27,6 +39,7 @@ const Root = ({ navigation, route }) => {
   return (
 
     <Tab.Navigator screenOptions={({ route }) => ({
+
       tabBarStyle: { backgroundColor: 'black', padding: 5 },
       tabBarIcon: ({ focused, color }) => {
         let iconName;
@@ -53,5 +66,15 @@ const Root = ({ navigation, route }) => {
     </Tab.Navigator>
   )
 }
-
+const styles = StyleSheet.create({
+  floatingMusic:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
+  }
+})
 export default Root
