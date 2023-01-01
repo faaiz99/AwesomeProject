@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Library from './Library';
 import Home from './Home';
@@ -19,14 +19,9 @@ function MyTabBar({ navigation }) {
     />
   );
 }
-
-
-
 const Tab = createBottomTabNavigator();
 const Root = ({ navigation, route }) => {
-
-
- 
+const [isPlaying, setIsPlaying] = useState(false);
   useEffect(() => {
     SystemNavigationBar.setNavigationColor('black');
   }, [])
@@ -34,7 +29,13 @@ const Root = ({ navigation, route }) => {
   return (
 
     <Tab.Navigator screenOptions={({ route }) => ({
-
+      headerStyle: {
+        backgroundColor: '#191414',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: '900',
+      },
       tabBarStyle: { backgroundColor: 'black', padding: 5 },
       tabBarIcon: ({ focused, color }) => {
         let iconName;
@@ -55,14 +56,14 @@ const Root = ({ navigation, route }) => {
       tabBarActiveTintColor: 'white',
       tabBarInactiveTintColor: '#5A5A5A',
     })}>
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={Home}/>
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Library" component={Library} />
     </Tab.Navigator>
   )
 }
 const styles = StyleSheet.create({
-  floatingMusic:{
+  floatingMusic: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,

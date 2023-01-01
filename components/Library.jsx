@@ -4,37 +4,51 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList
+  FlatList,
+  StatusBar
 } from 'react-native';
 import { useState } from 'react';
 import getSongs from '../getTracks'
-const Item = ({ name }) => (
-  <View style={styles.item}>
-    <TouchableOpacity>
-      <Text style={styles.title}>{name}</Text>
-    </TouchableOpacity>
+import TrackPlayer from'react-native-track-player';
 
-  </View>
-);
 
 export default function Library() {
   const [songsList, setSongsList] = useState([])
   useEffect(() => {
       const populate = async () => {
         var songs = await getSongs()
-        console.log("Library", songs)
+       // console.log("Library", songs)
         setSongsList(songs)
       }
       populate()
   },[songsList])
-
-
-
+  const playSong = async(name,path)=>{
+    TrackPlayer.reset()
+    musicObject = {
+      id: `${name}`,
+    url: `file://${path}`,
+    title: `${name}`,
+    }
+    await TrackPlayer.add([musicObject])
+    await TrackPlayer.play()
+    console.log("Added Song")
+  }
+  const Item = ({ name, path }) => (
+    <View style={styles.item}>
+      <TouchableOpacity onPress={()=>playSong(name,path)}>
+        <Text style={styles.title}>{name}</Text>
+      </TouchableOpacity>
+    </View>
+  );
   const renderItem = ({ item }) => (
-    <Item name={item.name} />
+    <Item name={item.name} path = {item.path} />
   );
   return (
+    
     <View style={styles.container}>
+        <StatusBar
+        animated={true}
+        backgroundColor="#191414"/>
       <FlatList
         data={songsList}
         renderItem={renderItem}
@@ -43,19 +57,17 @@ export default function Library() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#19141"
   },
   item: {
-    backgroundColor: "black",
-    color: "#19141",
+    backgroundColor: "#191414",
     padding: 5,
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
     color: "white"
   },
 });
