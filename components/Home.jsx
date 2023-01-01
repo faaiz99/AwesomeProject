@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View,StatusBar } from 'react-native'
+import { useState, useEffect } from 'react'
 import auth from '@react-native-firebase/auth';
 import Player from './Player';
 
@@ -16,11 +16,11 @@ const Home = ({ navigation, route }) => {
   if (user) {
     // console.log('User email: ', user);
   }
-
-
   return (
     <View>
-      <Player/>
+      
+      <StatusBar animated={true} backgroundColor="#191414"/>
+      <Player LibrarySong = {route.params} />
     </View>
   )
 }

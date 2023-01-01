@@ -12,7 +12,7 @@ import getSongs from '../getTracks'
 import TrackPlayer from'react-native-track-player';
 
 
-export default function Library() {
+export default function Library({ navigation, route }) {
   const [songsList, setSongsList] = useState([])
   useEffect(() => {
       const populate = async () => {
@@ -24,14 +24,11 @@ export default function Library() {
   },[songsList])
   const playSong = async(name,path)=>{
     TrackPlayer.reset()
-    musicObject = {
-      id: `${name}`,
-    url: `file://${path}`,
-    title: `${name}`,
-    }
-    await TrackPlayer.add([musicObject])
-    await TrackPlayer.play()
-    console.log("Added Song")
+    navigation.navigate('Home',{
+      title: `${name}`,
+      url: `file://${path}`
+    })
+    //console.log("Added Song")
   }
   const Item = ({ name, path }) => (
     <View style={styles.item}>
