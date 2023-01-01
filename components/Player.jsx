@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button, TouchableOpacity, ActivityIndicator, SafeAreaView, PermissionsAndroid, Alert, Image } from 'react-native'
+import { View, Text, StyleSheet, PermissionsAndroid, Alert, Image } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
@@ -20,7 +20,6 @@ const track2 = {
     title: 'Track 2',
     artist: 'Artist 1',
 };
-
 const track1 = {
     id: 'StorageSong',
     url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
@@ -32,7 +31,7 @@ const track1 = {
 const Player = ({ route }) => {
     const [track, setTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const { position, duration } = useProgress()
+    const {position, duration } = useProgress()
     const [isPlayerReady, setIsPlayerReady] = useState(false);
     const [repeat, setRepeat] = useState(false)
     const [random, setRandom] = useState(false)
