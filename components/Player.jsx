@@ -1,13 +1,10 @@
 import { View, Text, StyleSheet, PermissionsAndroid, Alert, Image } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import { useProgress } from 'react-native-track-player';
 import TrackPlayer, { RepeatMode } from 'react-native-track-player';
 import { SetupService } from '../setupPlayer';
-import getSongs from '../getTracks'
-
-
 const track3 = {
     id: 'track3',
     url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
@@ -26,26 +23,43 @@ const track1 = {
     title: 'AA Jaana',
     artist: 'Artist 1',
 };
-
-
-const Player = ({ route }) => {
+const Player = ({ LibrarySong }) => {
     const [track, setTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const {position, duration } = useProgress()
+    const { position, duration } = useProgress()
     const [isPlayerReady, setIsPlayerReady] = useState(false);
     const [repeat, setRepeat] = useState(false)
     const [random, setRandom] = useState(false)
-    const [songsList, setSongsList] = useState(null)
     const [like, setLike] = useState(false)
 
+    useEffect(() => {
+        if (LibrarySong) {
+            TrackPlayer.reset()
+            const trackLib = {
+                id: `Song${LibrarySong.title}`,
+                url: `${LibrarySong.url}`,
+                title: `${LibrarySong.title}`
+            }
+            TrackPlayer.add([trackLib])
+            setIsPlaying(true)
+            TrackPlayer.play()
+            const getName = async () => {
+                var title = await TrackPlayer.getCurrentTrack()
+                var pos = await TrackPlayer.getTrack(title)
+                setTrack(pos.title)
+            }
+            getName()
+        }
+
+    }, [LibrarySong])
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
             setIsPlayerReady(isSetup);
 
-            TrackPlayer.add([track2, track3, track1])
-            var title = await TrackPlayer.getCurrentTrack()
-            var pos = await TrackPlayer.getTrack(title)
+            // TrackPlayer.add([track2, track3, track1])
+            // var title = await TrackPlayer.getCurrentTrack()
+            // var pos = await TrackPlayer.getTrack(title)
             setTrack(pos.title)
             if (Platform.OS === 'android') {
                 isReadGranted = await PermissionsAndroid.request(
@@ -54,7 +68,7 @@ const Player = ({ route }) => {
             }
             if (isReadGranted === PermissionsAndroid.RESULTS.GRANTED) {
                 //TODO
-                console.log("Permission Granted")
+                // console.log("Permission Granted")
             }
             else {
                 Alert.alert("Storage Read Permission Required")
@@ -63,8 +77,6 @@ const Player = ({ route }) => {
         run();
         TrackPlayer.reset()
     }, []);
-
-
     const forward = async () => {
         var title = await TrackPlayer.getCurrentTrack()
         var pos = await TrackPlayer.getTrack(title)
@@ -105,14 +117,9 @@ const Player = ({ route }) => {
         setTrack(pos.title)
         await TrackPlayer.play()
     }
-    const liked = async ()=>{
+    const liked = async () => {
         setLike(!like)
     }
-
-
-
-
-
     return (
         <View>
             <View style={styles.musicBackground}>
@@ -120,13 +127,13 @@ const Player = ({ route }) => {
                     source={require('../assets/images/musicBackground.jpg')} />
             </View>
             <View style={styles.TrackLikeContainer}>
-            <Text style={styles.trackName}>{track}</Text>
-            <Text>{
-                like? <Icon name='heart' color='#1DB954' size={30} onPress={liked}/>:<Icon name='heart' color='white' size={30} onPress={liked}/>
+                <Text style={styles.trackName}>{track}</Text>
+                <Text>{
+                    like ? <Icon name='heart' color='#1DB954' size={30} onPress={liked} /> : <Icon name='heart' color='white' size={30} onPress={liked} />
                 }</Text>
-            
+
             </View>
-        
+
             <View>
 
                 <Slider
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "white",
         backgroundColor: "#191414",
-   
+
     },
     musicBackground: {
         height: '70%',
@@ -206,13 +213,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#191414"
     },
-    TrackLikeContainer:{
-        flexDirection:"row",
+    TrackLikeContainer: {
+        flexDirection: "row",
         backgroundColor: "#191414",
-        justifyContent:"space-around",
+        justifyContent: "space-around",
 
     }
 
 })
-
 export default Player
