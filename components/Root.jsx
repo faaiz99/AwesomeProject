@@ -29,11 +29,6 @@ const Root = ({ navigation, route }) => {
  
   useEffect(() => {
     SystemNavigationBar.setNavigationColor('black');
-    
-
-
-
-
   }, [])
 
   return (
