@@ -6,7 +6,7 @@ import Home from './Home';
 import SearchScreen from '../screens/SearchScreen'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import { Button, Text, TouchableOpacity, StyleSheet, Pre } from 'react-native';
+import { Button, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 function MyTabBar({ navigation }) {
   return (
