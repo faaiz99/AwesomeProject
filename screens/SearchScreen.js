@@ -13,7 +13,7 @@ const PlaylistScreen = ({ navigation }) => {
         backgroundColor="#191414"/>
               <TextInput
         style={styles.search}
-        placeholder="Artists,songs"
+        placeholder="Songs"
       />
     </ScrollView>
   );

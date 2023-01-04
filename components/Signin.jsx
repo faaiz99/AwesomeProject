@@ -9,7 +9,7 @@ import {
   StatusBar
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
@@ -22,6 +22,9 @@ export default Signin = ({ navigation }) => {
   const [getPassword, setPassword] = useState("")
   const [visible, setVisible] = useState(true)
 
+useEffect(()=>{
+  SystemNavigationBar.setNavigationColor('black');
+})
   const loginUser = () => {
     auth()
       .signInWithEmailAndPassword(getEmail, getPassword)
@@ -37,9 +40,9 @@ export default Signin = ({ navigation }) => {
   }
   return (
     <View style={{ flexDirection: 'column' }}>
-                 <StatusBar
+      <StatusBar
         animated={true}
-        backgroundColor="black"/>
+        backgroundColor="black" />
       <View style={{ backgroundColor: 'orange', height: '35%' }}>
         <ImageBackground
           style={{ flex: 1, height: '100%', width: '100%' }}
@@ -73,15 +76,15 @@ export default Signin = ({ navigation }) => {
                   placeholder="Password:"
                   secureTextEntry={visible}
                   onChangeText={e => setPassword(e)}></TextInput>
-                <Icon name='eye' size={15} color="black" onPress={()=>setVisible(!visible)} style={{
+                <Icon name='eye' size={15} color="white" onPress={() => setVisible(!visible)} style={{
                   position: 'absolute',
                   right: 20,
-                  marginTop:15
+                  marginTop: 15
                 }} />
               </TouchableOpacity>
             </View>
             <View style={styles.text}>
-              <Text style={{ color: '#1DB954' }}>Forget Password?</Text>
+              <Text style={{ color: '#1DB954' }} onPress={() => navigation.navigate('Forgot Password')}>Forget Password?</Text>
             </View>
           </View>
           <View style={styles.button}>
@@ -121,7 +124,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '80%',
-    // backgroundColor: 'pink',
   },
 
   box: {
