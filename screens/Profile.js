@@ -69,6 +69,9 @@ export default function Profile() {
     console.log('pathtofile: ', pathToFile);
     // uploads file
     await reference.putFile(pathToFile);
+    const ref = firebase.storage().ref(user1.email);
+    const url = await ref.getDownloadURL();
+    setImageUrl(url);
   };
 
   const AddUsername = async () => {
