@@ -26,7 +26,8 @@ export default function Library({ navigation, route }) {
     TrackPlayer.reset()
     navigation.navigate('Home',{
       title: `${name}`,
-      url: `file://${path}`
+      url: `file://${path}`,
+      
     })
     //console.log("Added Song")
   }

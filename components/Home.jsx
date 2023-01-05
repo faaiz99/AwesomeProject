@@ -18,7 +18,6 @@ const Home = ({ navigation, route }) => {
   }
   return (
     <View>
-      
       <StatusBar animated={true} backgroundColor="#191414"/>
       <Player LibrarySong = {route.params} />
     </View>
