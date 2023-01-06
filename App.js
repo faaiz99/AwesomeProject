@@ -29,7 +29,7 @@ const App = () => {
           tabBarStyle: {
             display: "none"
           },
-        }} component={Login} />
+        }} component={Signin} />
         <Stack.Screen options={{
           headerShown: false,
           tabBarStyle: {
