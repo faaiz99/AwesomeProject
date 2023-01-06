@@ -1,29 +1,15 @@
-import { View, Text, StyleSheet, PermissionsAndroid, Alert, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import {
+    View, Text, StyleSheet, PermissionsAndroid, Alert, TouchableOpacity, Animated, Easing,
+} from 'react-native'
+import React, { useEffect, useState, } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import { useProgress } from 'react-native-track-player';
 import TrackPlayer, { RepeatMode } from 'react-native-track-player';
 import { SetupService } from '../setupPlayer';
-const track3 = {
-    id: 'track3',
-    url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
-    title: 'Track 1',
-    artist: 'Artist 1',
-};
-const track2 = {
-    id: 'track2',
-    url: 'file:///storage/emulated/0/Music/aajana.mp3',
-    title: 'Track 2',
-    artist: 'Artist 1',
-};
-const track1 = {
-    id: 'StorageSong',
-    url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
-    title: 'AA Jaana',
-    artist: 'Artist 1',
-};
-const Player = ({ LibrarySong }) => {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+const Player = ({ LibrarySong, navigation }) => {
     const [track, setTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const { position, duration } = useProgress()
@@ -31,7 +17,23 @@ const Player = ({ LibrarySong }) => {
     const [repeat, setRepeat] = useState(false)
     const [random, setRandom] = useState(false)
     const [like, setLike] = useState(false)
-
+    const [song, setSong] = useState({});
+    const [arr, setarr] = useState([])
+    let rotateValueHolder = new Animated.Value(0);
+    let user = auth().currentUser;
+    const startImageRotateFunction = () => {
+        rotateValueHolder.setValue(0);
+        Animated.timing(rotateValueHolder, {
+            toValue: 1,
+            duration: 5000,
+            easing: Easing.linear,
+            useNativeDriver: false,
+        }).start(() => startImageRotateFunction());
+    };
+    const RotateData = rotateValueHolder.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
     useEffect(() => {
         if (LibrarySong) {
             TrackPlayer.reset()
@@ -42,6 +44,7 @@ const Player = ({ LibrarySong }) => {
             }
             TrackPlayer.add([trackLib])
             setIsPlaying(true)
+            startImageRotateFunction()
             TrackPlayer.play()
             const getName = async () => {
                 var title = await TrackPlayer.getCurrentTrack()
@@ -49,17 +52,15 @@ const Player = ({ LibrarySong }) => {
                 setTrack(pos.title)
             }
             getName()
+
         }
 
     }, [LibrarySong])
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
-            setIsPlayerReady(isSetup);
-
-            // TrackPlayer.add([track2, track3, track1])
-            // var title = await TrackPlayer.getCurrentTrack()
-            // var pos = await TrackPlayer.getTrack(title)
+            if (!isSetup)
+                setIsPlayerReady(isSetup);
             setTrack(pos.title)
             if (Platform.OS === 'android') {
                 isReadGranted = await PermissionsAndroid.request(
@@ -88,7 +89,6 @@ const Player = ({ LibrarySong }) => {
         var pos = await TrackPlayer.getTrack(title)
         setTrack(pos.title)
         TrackPlayer.skipToPrevious()
-
     }
     const repeatMode = async () => {
         if (repeat == true || repeat == false) {
@@ -118,24 +118,52 @@ const Player = ({ LibrarySong }) => {
         await TrackPlayer.play()
     }
     const liked = async () => {
-        setLike(!like)
+        setLike(!like);
+        setarr([...arr, song]);
+        try {
+            await AsyncStorage.setItem(user.email, JSON.stringify(arr));
+            console.log('songs added');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const unlike = async () => {
+        setLike(like);
+        let id = song.id
+        const updatedItems = arr.filter((item) => item.id !== id);
+        // Use the setItems function to update the state with the new array of items
+        setarr(updatedItems);
+        try {
+            await AsyncStorage.setItem(user.email, JSON.stringify(arr));
+            console.log('song list updated');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const likedSongs = () => {
+        Navigation.navigate('LikedSongs')
+    }
+    const secondsToTime = (time) => {
+        m = Math.floor(time % 3600 / 60).toString().padStart(2, '0'),
+            s = Math.floor(time % 60).toString().padStart(2, '0');
+
+        return m + ':' + s;
     }
     return (
         <View>
             <View style={styles.musicBackground}>
-                <Image style={{ height: '95%', width: '95%', borderRadius: 10 }}
+                <Animated.Image style={{ height: 300, width: 300, borderRadius: 300 / 2, borderColor: "white", borderWidth: 1, transform: [{ rotate: RotateData }], }}
                     source={require('../assets/images/musicBackground.jpg')} />
             </View>
             <View style={styles.TrackLikeContainer}>
                 <Text style={styles.trackName}>{track}</Text>
-                <Text>{
-                    like ? <Icon name='heart' color='#1DB954' size={30} onPress={liked} /> : <Icon name='heart' color='white' size={30} onPress={liked} />
+                <Text> {like ?
+                    <Icon name="heart" color="#1DB954" size={30} onPress={liked} onLongPress={likedSongs} />
+                    :
+                    <Icon name="heart" color="white" size={30} onPress={unlike} />
                 }</Text>
-
             </View>
-
             <View>
-
                 <Slider
                     style={{ height: 40, backgroundColor: "#191414" }}
                     minimumTrackTintColor="#1DB954"
@@ -151,39 +179,38 @@ const Player = ({ LibrarySong }) => {
                     }}
                 />
                 <View style={styles.time}>
-                    <Text style={styles.timeFont}> {position.toFixed(0)}{"s"}</Text>
-                    <Text style={styles.timeFont}>{duration.toFixed(0)}{"s"}</Text>
+                    <Text style={styles.timeFont}> {secondsToTime(position)}</Text>
+                    <Text style={styles.timeFont}>{secondsToTime(duration)}</Text>
                 </View>
             </View>
             <View style={styles.controls}>
                 <View>{
-                    random ? <Icon name='random' size={30} color="white" onPress={shuffleMode} /> : <Icon name='random' size={30} color="grey" onPress={shuffleMode} />
+                    random ? <Icon name='random' size={25} color="white" onPress={shuffleMode} /> : <Icon name='random' size={25} color="grey" onPress={shuffleMode} />
                 }
                 </View>
-
-                <Icon name='step-backward' size={30} color="white" onPress={backward} />
-                <View>
+                <Icon name='step-backward' size={25} color="white" onPress={backward} />
+                <View style={styles.circle}>
                     {
-                        isPlaying ? <Icon name='pause' size={60} color="white" onPress={() => {
+                        isPlaying ? <Icon name='pause' size={25} color="black" onPress={() => {
+
                             TrackPlayer.pause()
                             setIsPlaying(false)
 
-                        }} /> : <Icon name='play' size={60} color="white" onPress={() => {
+                        }} /> : <Icon name='play' size={25} color="black" onPress={() => {
+
                             TrackPlayer.play()
                             setIsPlaying(true)
                         }} />
                     }
                 </View>
-                <Icon name='step-forward' size={30} color="white" onPress={forward} />
+                <Icon name='step-forward' size={25} color="white" onPress={forward} />
                 <View>{
-                    repeat ? <Icon name='retweet' size={30} color="white" onPress={repeatMode} /> : <Icon name='retweet' size={30} color="grey" onPress={repeatMode} />
+                    repeat ? <Icon name='retweet' size={25} color="white" onPress={repeatMode} /> : <Icon name='retweet' size={25} color="grey" onPress={repeatMode} />
                 }
                 </View>
-
             </View>
         </View>
     );
-
 }
 const styles = StyleSheet.create({
     controls: {
@@ -198,6 +225,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#191414"
     },
     timeFont: {
+        marginHorizontal: 15,
         color: "white",
     },
     trackName: {
@@ -208,17 +236,25 @@ const styles = StyleSheet.create({
 
     },
     musicBackground: {
-        height: '70%',
+        height: '60%',
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#191414"
+        backgroundColor: "#191414",
+
     },
     TrackLikeContainer: {
         flexDirection: "row",
         backgroundColor: "#191414",
         justifyContent: "space-around",
 
-    }
-
+    },
+    circle: {
+        width: 50,
+        height: 50,
+        borderRadius: 50 / 2,
+        backgroundColor: "white",
+        alignItems: "center",
+        justifyContent: "center"
+    },
 })
 export default Player

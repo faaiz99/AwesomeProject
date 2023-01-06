@@ -6,7 +6,7 @@ import Signup from './components/Signup';
 import ForgotPassword from './screens/ForgotPassword';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import LikedSongs from './screens/LikedSongs';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +41,12 @@ const App = () => {
             display: "none"
           },
         }} name="Signup" component={Signup} />
+        <Stack.Screen options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: "none"
+          },
+        }} name="Liked Songs" component={LikedSongs} />
         <Stack.Screen options={{
           headerShown: false,
           tabBarStyle: {
