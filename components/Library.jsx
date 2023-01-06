@@ -1,68 +1,70 @@
-import { View, Text, Button, PermissionsAndroid } from 'react-native'
-import React, {useState} from 'react'
-import auth from '@react-native-firebase/auth';
-import { utils } from '@react-native-firebase/app';
-import storage from '@react-native-firebase/storage';
-import FilePicker from 'react-native-document-picker';
+import React, { useEffect } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  StatusBar
+} from 'react-native';
+import { useState } from 'react';
+import getSongs from '../getTracks'
+import TrackPlayer from'react-native-track-player';
 
-const Library = ({navigation, route}) => {
-  const [song, setSong] = useState(null);
-  const reference = storage().ref('song');
 
-
-  //Get current user through authentication
-  const user = auth.currentUser;
-  let result
-  const pickDocument = async () => {
-     result = await FilePicker.pick({
-      presentationStyle:'fullScreen',
-      allowMultiSelection:true,
-      copyTo:'cachesDirectory'
+export default function Library({ navigation, route }) {
+  const [songsList, setSongsList] = useState([])
+  useEffect(() => {
+      const populate = async () => {
+        var songs = await getSongs()
+       // console.log("Library", songs)
+        setSongsList(songs)
+      }
+      populate()
+  },[songsList])
+  const playSong = async(name,path)=>{
+    TrackPlayer.reset()
+    navigation.navigate('Home',{
+      title: `${name}`,
+      url: `file://${path}`
     })
-    // Fetch the photo with it's local URI
-    console.log(result);
-
-    // const response = fetch(result.uri);
-
-    // const file = new Blob(
-    //   [response.value], {
-    //     type: 'audio/mpeg'
-    //   });
-    // console.log('do we see this?');
-
-    // try {
-    //   //Create the file reference
-    //   const storage = getStorage();
-    //   const storageRef = ref(storage, `songs/${user.uid}/${result.name}`);
-
-    //   // Upload Blob file to Firebase
-    //   const snapshot = uploadBytes(storageRef, file, 'blob').then((snapshot) => {
-    //     console.log('Uploaded a song to firebase storage!');
-    //   });
-
-    //   setSong(result.uri);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
+    //console.log("Added Song")
   }
+  const Item = ({ name, path }) => (
+    <View style={styles.item}>
+      <TouchableOpacity onPress={()=>playSong(name,path)}>
+        <Text style={styles.title}>{name}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+  const renderItem = ({ item }) => (
+    <Item name={item.name} path = {item.path} />
+  );
   return (
-    <View>
-      <Text>Library</Text>
-      <Button onPress={pickDocument} title="select"/>
-      <Button
-        title='upload'
-        onPress={async () => {
-          // path to existing file on filesystem
-          console.log("Path", result[0].uri)
-          const pathToFile = result[0].fileCopyUri;
-          console.log(pathToFile)
-          // uploads file
-          await reference.putFile(pathToFile);
-        }}
+    
+    <View style={styles.container}>
+        <StatusBar
+        animated={true}
+        backgroundColor="#191414"/>
+      <FlatList
+        data={songsList}
+        renderItem={renderItem}
+        extraData={songsList}
       />
     </View>
-  )
+  );
 }
-
-export default Library
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#19141"
+  },
+  item: {
+    backgroundColor: "#191414",
+    padding: 5,
+  },
+  title: {
+    fontSize: 15,
+    color: "white"
+  },
+});
