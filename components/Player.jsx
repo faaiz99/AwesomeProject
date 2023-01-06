@@ -150,9 +150,13 @@ const Player = ({LibrarySong}) => {
       url: `${LibrarySong.url}`,
       title: `${LibrarySong.title}`,
     };
+    try{
     setLike(!like);
     setarr(arr.filter(item => item.id !== trackLib.id));
-    alert('song disliked');
+    alert('song disliked');}
+    catch(error){
+      console.log(error)
+    }
   };
   const likesongs = async () => {
     navigation.navigate('LikedSongs');
