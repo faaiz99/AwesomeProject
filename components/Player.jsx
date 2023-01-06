@@ -30,7 +30,6 @@ const Player = ({ LibrarySong, navigation }) => {
             useNativeDriver: false,
         }).start(() => startImageRotateFunction());
     };
-
     const RotateData = rotateValueHolder.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
@@ -212,7 +211,6 @@ const Player = ({ LibrarySong, navigation }) => {
             </View>
         </View>
     );
-
 }
 const styles = StyleSheet.create({
     controls: {
