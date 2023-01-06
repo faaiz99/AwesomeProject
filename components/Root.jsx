@@ -6,7 +6,7 @@ import Home from './Home';
 import SearchScreen from '../screens/SearchScreen'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import { Button, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 
 function MyTabBar({ navigation }) {
   return (
@@ -49,8 +49,6 @@ const [isPlaying, setIsPlaying] = useState(false);
         } else if (route.name === 'Library') {
           iconName = focused ? 'list' : 'list';
         }
-
-        // You can return any component that you like here!
         return <Icon name={iconName} size={30} color={color} />;
       },
       tabBarActiveTintColor: 'white',
