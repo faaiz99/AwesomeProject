@@ -11,15 +11,7 @@ import {
 import { useState } from 'react';
 import getSongs from '../getTracks';
 import TrackPlayer from 'react-native-track-player';
-<<<<<<< Updated upstream
-
 import { LogBox } from 'react-native';
-
-
-
-=======
-import { LogBox } from 'react-native';
->>>>>>> Stashed changes
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
