@@ -12,6 +12,7 @@ import { useState } from 'react';
 import getSongs from '../getTracks';
 import TrackPlayer from 'react-native-track-player';
 import { LogBox } from 'react-native';
+
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
@@ -50,7 +51,6 @@ export default function Library({ navigation, route }) {
   const renderItem = ({ item }) => {
     return <Item name={item.name} path={item.path} mtime={item.mtime} />;
   };
-
   const playlist = () => {
     var songsArray = [];
     songsArray = songsList.map(song => {
@@ -59,7 +59,6 @@ export default function Library({ navigation, route }) {
     songsArray.shift();
     navigation.navigate('ListPlaylists', { songsQueue: songsArray });
   };
-
   return (
     <View style={styles.container}>      
     <Button title="Playlists" onPress={playlist} />

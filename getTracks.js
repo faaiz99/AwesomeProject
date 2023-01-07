@@ -1,7 +1,5 @@
 import RNFS from 'react-native-fs';
 var musicFiles = ['']
-var objects = {};
-
 export default getSongs = async () => {
 
 
@@ -16,6 +14,7 @@ export default getSongs = async () => {
         // Check if the file is a music file by checking its file extension      
         if (file.name.endsWith('.mp3') || file.name.endsWith('.m4a')) {
           if (!musicFiles.some((e) => e.path == file.path)) {
+            file.name = file.name.slice(0, 30);
             // console.log("true file not exists")
             musicFiles.push(file);
           }
