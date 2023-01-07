@@ -1,19 +1,12 @@
+import { View, Text, StyleSheet, PermissionsAndroid, Alert, TouchableOpacity, Animated, Easing, Image } from 'react-native'
+import React, { useEffect, useState, } from 'react'
 import auth from '@react-native-firebase/auth';
-import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import { useProgress } from 'react-native-track-player';
 import TrackPlayer, { RepeatMode } from 'react-native-track-player';
 import { SetupService } from '../setupPlayer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-    Text,
-    View,
-    ActivityIndicator,
-    TouchableOpacity,
-    Image,
-    StyleSheet,
-} from 'react-native';
 
 const Player = ({ LibrarySong, navigation }) => {
     const [track, setTrack] = useState(null);
@@ -31,16 +24,22 @@ const Player = ({ LibrarySong, navigation }) => {
     }, [arr]);
     let user = auth().currentUser;
     useEffect(() => {
+        AsyncStorage.setItem(`${user.email}`, JSON.stringify(arr)).catch(error => {
+          console.log(error);
+        });
+      }, [arr]);
+    useEffect(() => {
         if (LibrarySong) {
             TrackPlayer.reset();
             const trackLib = {
-                id: `Song${LibrarySong.title}`,
+                id: `${LibrarySong.title}`,
                 url: `${LibrarySong.url}`,
-                title: `${LibrarySong.title}`,
-            };
-            TrackPlayer.add([trackLib]);
-            setIsPlaying(true);
-            TrackPlayer.play();
+                title: `${LibrarySong.title}`
+            }
+            TrackPlayer.add(LibrarySong.songsQueue)
+            setIsPlaying(true)
+            TrackPlayer.play()
+
             const getName = async () => {
                 var title = await TrackPlayer.getCurrentTrack();
                 var pos = await TrackPlayer.getTrack(title);
@@ -49,12 +48,9 @@ const Player = ({ LibrarySong, navigation }) => {
             getName();
         }
     }, [LibrarySong]);
-
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
-
-            setIsPlayerReady(isSetup);
             if (Platform.OS === 'android') {
 
                 isReadGranted = await PermissionsAndroid.request(
@@ -226,9 +222,9 @@ const Player = ({ LibrarySong, navigation }) => {
                     </View>
                 </View>
             </View>
-        );
-    }
-    const styles = StyleSheet.create({
+    );  
+}  
+const styles = StyleSheet.create({
         controls: {
             flexDirection: "row",
             justifyContent: "space-evenly",
@@ -249,7 +245,6 @@ const Player = ({ LibrarySong, navigation }) => {
             fontSize: 20,
             color: "white",
             backgroundColor: "#191414",
-
         },
         musicBackground: {
             height: '60%',
