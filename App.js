@@ -8,7 +8,8 @@ import ForgotPassword from './screens/ForgotPassword';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LikedSongs from './screens/LikedSongs';
-
+import ListPlaylist from './components/ListPlaylist'
+import PlayList from './components/Playlist'
 
 const Stack = createNativeStackNavigator();
 
@@ -54,7 +55,20 @@ const App = () => {
           tabBarStyle: {
             display: "none"
           },
+        }} name="ListPlaylists" component={ListPlaylist} />
+             <Stack.Screen options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: "none"
+          },
+        }} name="Playlist" component={PlayList} />
+          <Stack.Screen options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: "none"
+          },
         }} name="LikedSongs" component={LikedSongs} />        
+
       </Stack.Navigator>
     </NavigationContainer>
   )

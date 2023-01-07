@@ -69,52 +69,52 @@ const Player = ({LibrarySong}) => {
     }
   }, [LibrarySong]);
 
-  useEffect(() => {
-    async function run() {
-      const isSetup = await SetupService();
-      setIsPlayerReady(isSetup);
-
-      // TrackPlayer.add([track2, track3, track1])
-      // var title = await TrackPlayer.getCurrentTrack()
-      // var pos = await TrackPlayer.getTrack(title)
-      setTrack(pos.title);
-      if (Platform.OS === 'android') {
-        isReadGranted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-      }
-      if (isReadGranted === PermissionsAndroid.RESULTS.GRANTED) {
-        //TODO
-        // console.log("Permission Granted")
-      } else {
-        Alert.alert('Storage Read Permission Required');
-      }
+    }, [LibrarySong])
+    useEffect(() => {
+        async function run() {
+            const isSetup = await SetupService();
+            setIsPlayerReady(isSetup);
+            if (Platform.OS === 'android') {
+                isReadGranted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                );
+            }
+            if (isReadGranted === PermissionsAndroid.RESULTS.GRANTED) {
+                //TODO
+                // console.log("Permission Granted")
+            }
+            else {
+                Alert.alert("Storage Read Permission Required")
+            }
+        }
+        run();
+       // TrackPlayer.reset()
+    }, []);
+    const forward = async () => {
+        var title = await TrackPlayer.getCurrentTrack()
+        var pos = await TrackPlayer.getTrack(title)
+        setTrack(pos.title)
+        TrackPlayer.skipToNext()
     }
-    run();
-    TrackPlayer.reset();
-  }, []);
-  const forward = async () => {
-    var title = await TrackPlayer.getCurrentTrack();
-    var pos = await TrackPlayer.getTrack(title);
-    setTrack(pos.title);
-    TrackPlayer.skipToNext();
-  };
-  const backward = async () => {
-    var title = await TrackPlayer.getCurrentTrack();
-    var pos = await TrackPlayer.getTrack(title);
-    setTrack(pos.title);
-    TrackPlayer.skipToPrevious();
-  };
-  const repeatMode = async () => {
-    if (repeat == true || repeat == false) {
-      if (repeat) {
-        TrackPlayer.setRepeatMode(RepeatMode.Off);
-        //  console.log(await TrackPlayer.getRepeatMode())
-      } else {
-        TrackPlayer.setRepeatMode(RepeatMode.Track);
-        //  console.log("Repeat On", await TrackPlayer.getRepeatMode())
-      }
-      setRepeat(!repeat);
+    const backward = async () => {
+        var title = await TrackPlayer.getCurrentTrack()
+        var pos = await TrackPlayer.getTrack(title)
+        setTrack(pos.title)
+        TrackPlayer.skipToPrevious()
+    }
+    const repeatMode = async () => {
+        if (repeat == true || repeat == false) {
+            if (repeat) {
+                TrackPlayer.setRepeatMode(RepeatMode.Off)
+                //  console.log(await TrackPlayer.getRepeatMode())
+            }
+
+            else {
+                TrackPlayer.setRepeatMode(RepeatMode.Track)
+                //  console.log("Repeat On", await TrackPlayer.getRepeatMode())
+            }
+            setRepeat(!repeat)
+        }
     }
   };
   const shuffleMode = async () => {

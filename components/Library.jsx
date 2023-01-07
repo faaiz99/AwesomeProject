@@ -8,10 +8,13 @@ import {
   StatusBar
 } from 'react-native';
 import { useState } from 'react';
-import getSongs from '../getTracks'
-import TrackPlayer from'react-native-track-player';
+import getSongs from '../getTracks';
+import TrackPlayer from 'react-native-track-player';
+import { LogBox } from "react-native";
 
-
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
 export default function Library({ navigation, route }) {
   const [songsList, setSongsList] = useState([])
   useEffect(() => {
