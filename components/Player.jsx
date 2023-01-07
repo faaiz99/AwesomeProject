@@ -15,24 +15,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-const track3 = {
-  id: 'track3',
-  url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
-  title: 'Track 1',
-  artist: 'Artist 1',
-};
-const track2 = {
-  id: 'track2',
-  url: 'file:///storage/emulated/0/Music/aajana.mp3',
-  title: 'Track 2',
-  artist: 'Artist 1',
-};
-const track1 = {
-  id: 'StorageSong',
-  url: 'file:///storage/emulated/0/Music/file_example_MP3_1MG.mp3',
-  title: 'AA Jaana',
-  artist: 'Artist 1',
-};
+
 const Player = ({LibrarySong}) => {
   const [track, setTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -69,12 +52,11 @@ const Player = ({LibrarySong}) => {
     }
   }, [LibrarySong]);
 
-    }, [LibrarySong])
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
             setIsPlayerReady(isSetup);
-            if (Platform.OS === 'android') {
+                  if (Platform.OS === 'android') {
                 isReadGranted = await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                 );
@@ -88,7 +70,7 @@ const Player = ({LibrarySong}) => {
             }
         }
         run();
-       // TrackPlayer.reset()
+   
     }, []);
     const forward = async () => {
         var title = await TrackPlayer.getCurrentTrack()
@@ -116,7 +98,7 @@ const Player = ({LibrarySong}) => {
             setRepeat(!repeat)
         }
     }
-  };
+  
   const shuffleMode = async () => {
     setRandom(!random);
     var currentQueue = await TrackPlayer.getQueue();
