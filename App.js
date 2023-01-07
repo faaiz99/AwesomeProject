@@ -11,6 +11,7 @@ import LikedSongs from './screens/LikedSongs';
 import ListPlaylist from './components/ListPlaylist'
 import PlayList from './components/Playlist'
 
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -44,6 +45,12 @@ const App = () => {
             display: "none"
           },
         }} name="Signup" component={Signup} />
+        <Stack.Screen options={{
+          headerShown: false,
+          tabBarStyle: {
+            display: "none"
+          },
+        }} name="Liked Songs" component={LikedSongs} />
         <Stack.Screen options={{
           headerShown: false,
           tabBarStyle: {
