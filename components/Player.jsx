@@ -24,11 +24,6 @@ const Player = ({ LibrarySong, navigation }) => {
     }, [arr]);
     let user = auth().currentUser;
     useEffect(() => {
-        AsyncStorage.setItem(`${user.email}`, JSON.stringify(arr)).catch(error => {
-          console.log(error);
-        });
-      }, [arr]);
-    useEffect(() => {
         if (LibrarySong) {
             TrackPlayer.reset();
             const trackLib = {
