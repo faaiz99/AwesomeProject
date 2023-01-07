@@ -36,19 +36,23 @@ const Player = ({ LibrarySong, navigation }) => {
     });
     useEffect(() => {
         AsyncStorage.setItem(`${user.email}`, JSON.stringify(arr)).catch(error => {
-          console.log(error);
+            console.log(error);
         });
-      }, [arr]);
+    }, [arr]);
     useEffect(() => {
         if (LibrarySong) {
-            TrackPlayer.reset()
+            // TrackPlayer.reset()
             const trackLib = {
-                id: `Song${LibrarySong.title}`,
+                id: `${LibrarySong.title}`,
                 url: `${LibrarySong.url}`,
                 title: `${LibrarySong.title}`
             }
-            TrackPlayer.add([trackLib])
+            TrackPlayer.add(LibrarySong.songsQueue)
             setIsPlaying(true)
+            const index = LibrarySong.songsQueue.findIndex(
+                (song) => song.title === LibrarySong.title
+              );
+              TrackPlayer.skip(index);
             TrackPlayer.play()
             const getName = async () => {
                 var title = await TrackPlayer.getCurrentTrack();
@@ -61,6 +65,8 @@ const Player = ({ LibrarySong, navigation }) => {
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
+            setIsPlayerReady(isSetup);
+
             setTrack(pos.title)
             if (Platform.OS === 'android') {
                 isReadGranted = await PermissionsAndroid.request(
@@ -76,7 +82,6 @@ const Player = ({ LibrarySong, navigation }) => {
             }
         }
         run();
-        TrackPlayer.reset()
     }, []);
     const forward = async () => {
         var title = await TrackPlayer.getCurrentTrack()
@@ -87,6 +92,7 @@ const Player = ({ LibrarySong, navigation }) => {
     const backward = async () => {
         var title = await TrackPlayer.getCurrentTrack()
         var pos = await TrackPlayer.getTrack(title)
+        console.log("backward")
         setTrack(pos.title)
         TrackPlayer.skipToPrevious()
     }
@@ -149,7 +155,6 @@ const Player = ({ LibrarySong, navigation }) => {
     const likesongs = async () => {
         navigation.navigate('LikedSongs');
     };
-
     const secondsToTime = (time) => {
         m = Math.floor(time % 3600 / 60).toString().padStart(2, '0'),
             s = Math.floor(time % 60).toString().padStart(2, '0');
@@ -220,7 +225,6 @@ const Player = ({ LibrarySong, navigation }) => {
             </View>
         </View>
     );
-   
 }
 const styles = StyleSheet.create({
     controls: {

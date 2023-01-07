@@ -1,6 +1,5 @@
 import RNFS from 'react-native-fs';
 var musicFiles = ['']
-var objects = {};
 
 export default getSongs = async () => {
 
