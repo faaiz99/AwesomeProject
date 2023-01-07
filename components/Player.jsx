@@ -1,5 +1,5 @@
 import {
-    View, Text, StyleSheet, PermissionsAndroid, Alert, TouchableOpacity, Animated, Easing,
+    View, Text, StyleSheet, PermissionsAndroid, Alert, TouchableOpacity, Animated, Easing, Image
 } from 'react-native'
 import React, { useEffect, useState, } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -35,6 +35,11 @@ const Player = ({ LibrarySong, navigation }) => {
         outputRange: ['0deg', '360deg'],
     });
     useEffect(() => {
+        AsyncStorage.setItem(`${user.email}`, JSON.stringify(arr)).catch(error => {
+          console.log(error);
+        });
+      }, [arr]);
+    useEffect(() => {
         if (LibrarySong) {
             TrackPlayer.reset()
             const trackLib = {
@@ -44,23 +49,18 @@ const Player = ({ LibrarySong, navigation }) => {
             }
             TrackPlayer.add([trackLib])
             setIsPlaying(true)
-            startImageRotateFunction()
             TrackPlayer.play()
             const getName = async () => {
-                var title = await TrackPlayer.getCurrentTrack()
-                var pos = await TrackPlayer.getTrack(title)
-                setTrack(pos.title)
-            }
-            getName()
-
+                var title = await TrackPlayer.getCurrentTrack();
+                var pos = await TrackPlayer.getTrack(title);
+                setTrack(pos.title);
+            };
+            getName();
         }
-
-    }, [LibrarySong])
+    }, [LibrarySong]);
     useEffect(() => {
         async function run() {
             const isSetup = await SetupService();
-            if (!isSetup)
-                setIsPlayerReady(isSetup);
             setTrack(pos.title)
             if (Platform.OS === 'android') {
                 isReadGranted = await PermissionsAndroid.request(
@@ -118,31 +118,38 @@ const Player = ({ LibrarySong, navigation }) => {
         await TrackPlayer.play()
     }
     const liked = async () => {
-        setLike(!like);
-        setarr([...arr, song]);
+        const trackLib = {
+            id: `Song${LibrarySong.title}`,
+            url: `${LibrarySong.url}`,
+            title: `${LibrarySong.title}`,
+        };
         try {
-            await AsyncStorage.setItem(user.email, JSON.stringify(arr));
-            console.log('songs added');
+            setarr([...arr, trackLib]);
+            setLike(!like);
+            alert('song liked');
         } catch (error) {
             console.log(error);
         }
     };
     const unlike = async () => {
-        setLike(like);
-        let id = song.id
-        const updatedItems = arr.filter((item) => item.id !== id);
-        // Use the setItems function to update the state with the new array of items
-        setarr(updatedItems);
+        const trackLib = {
+            id: `Song${LibrarySong.title}`,
+            url: `${LibrarySong.url}`,
+            title: `${LibrarySong.title}`,
+        };
         try {
-            await AsyncStorage.setItem(user.email, JSON.stringify(arr));
-            console.log('song list updated');
-        } catch (error) {
-            console.log(error);
+            setLike(!like);
+            setarr(arr.filter(item => item.id !== trackLib.id));
+            alert('song disliked');
+        }
+        catch (error) {
+            console.log(error)
         }
     };
-    const likedSongs = () => {
-        Navigation.navigate('LikedSongs')
-    }
+    const likesongs = async () => {
+        navigation.navigate('LikedSongs');
+    };
+
     const secondsToTime = (time) => {
         m = Math.floor(time % 3600 / 60).toString().padStart(2, '0'),
             s = Math.floor(time % 60).toString().padStart(2, '0');
@@ -157,11 +164,13 @@ const Player = ({ LibrarySong, navigation }) => {
             </View>
             <View style={styles.TrackLikeContainer}>
                 <Text style={styles.trackName}>{track}</Text>
-                <Text> {like ?
-                    <Icon name="heart" color="#1DB954" size={30} onPress={liked} onLongPress={likedSongs} />
-                    :
-                    <Icon name="heart" color="white" size={30} onPress={unlike} />
-                }</Text>
+                <Text>
+                    {like ? (
+                        <Icon name="heart" color="#1DB954" size={30} onPress={unlike} />
+                    ) : (
+                        <Icon name="heart" color="white" size={30} onPress={liked} />
+                    )}
+                </Text>
             </View>
             <View>
                 <Slider
@@ -211,6 +220,7 @@ const Player = ({ LibrarySong, navigation }) => {
             </View>
         </View>
     );
+   
 }
 const styles = StyleSheet.create({
     controls: {
