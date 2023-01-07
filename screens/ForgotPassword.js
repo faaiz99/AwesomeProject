@@ -48,7 +48,7 @@ const ForgotPassword = ({ navigation }) => {
           borderColor: '#00FF38',
         }}
         resizeMode="stretch"
-        source={require('../assets/images/shaegill.jpeg')}></Image>
+        source={require('../assets/images/forgotPassword.png')}></Image>
 
       <ScrollView>
         <View style={{ justifyContent: 'space-evenly' }}>
