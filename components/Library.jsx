@@ -12,11 +12,13 @@ import { useState } from 'react';
 import getSongs from '../getTracks';
 import TrackPlayer from 'react-native-track-player';
 import { LogBox } from 'react-native';
+
+
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-export default function Library({ navigation}) {
+export default function Library({ navigation, route }) {
   const [songsList, setSongsList] = useState([]);
   useEffect(() => {
     const populate = async () => {
@@ -38,7 +40,6 @@ export default function Library({ navigation}) {
       url: `file://${path}`,
       timeAdded: mtime,
       songsQueue: songsArray,
-
     });
 };
   const Item = ({ name, path, mtime }) => (
@@ -51,6 +52,7 @@ export default function Library({ navigation}) {
   const renderItem = ({ item }) => {
     return <Item name={item.name} path={item.path} mtime={item.mtime} />;
   };
+
   const playlist = () => {
     var songsArray = [];
     songsArray = songsList.map(song => {
