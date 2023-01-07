@@ -13,7 +13,7 @@ import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-export default Signup = ({ navigation }) => {
+const Signup = ({ navigation }) => {
   const [getEmail, setEmail] = useState('');
   const [getPassword, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -168,3 +168,5 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 });
+
+export default Signup
