@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import { useProgress } from 'react-native-track-player';
-import TrackPlayer, { RepeatMode } from 'react-native-track-player';
+import TrackPlayer, { RepeatMode, PlaybackTrackChangedEvent } from 'react-native-track-player';
 import { SetupService } from '../setupPlayer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -25,21 +25,37 @@ const Player = ({ LibrarySong, navigation }) => {
     let user = auth().currentUser;
     useEffect(() => {
         if (LibrarySong) {
-            TrackPlayer.reset();
-            TrackPlayer.add(LibrarySong.songsQueue)
-            setIsPlaying(true)
-            TrackPlayer.play()
+            const trackLib = {
+              id: `${LibrarySong.title}`,
+              url: `${LibrarySong.url}`,
+              title: `${LibrarySong.title}`,
+              mtime: `${LibrarySong.mtime}`,
+            };
+            TrackPlayer.add(LibrarySong.songsQueue);
+      
+            setIsPlaying(true);
+            const index = LibrarySong.songsQueue.findIndex(
+              (song) => song.title === LibrarySong.title
+            );
+            TrackPlayer.skip(index);
+            TrackPlayer.play();
             const getName = async () => {
-                var title = await TrackPlayer.getCurrentTrack();
-                var pos = await TrackPlayer.getTrack(title);
-                setTrack(pos.title);
-            }
+              var title = await TrackPlayer.getCurrentTrack();
+              var pos = await TrackPlayer.getTrack(title);
+              setTrack(pos.title);
+            };
             getName();
-        }
-    }, [LibrarySong]);
+          }
+    }, [PlaybackTrackChangedEvent, LibrarySong]);
     useEffect(() => {
         async function run() {
-            const isSetup = await SetupService();
+            if(!isPlayerReady){
+                const isSetup = await SetupService();
+                setIsPlayerReady(isSetup)
+            }
+            var title = await TrackPlayer.getCurrentTrack();
+            var pos = await TrackPlayer.getTrack(title);
+            setTrack(pos.title)
             if (Platform.OS === 'android') {
 
                 isReadGranted = await PermissionsAndroid.request(
@@ -149,7 +165,7 @@ const Player = ({ LibrarySong, navigation }) => {
     return (
         <View>
             <View style={styles.musicBackground}>
-                <Image style={{ height: 300, width: 300, borderRadius: 300 / 2, borderColor: "white", borderWidth: 1}}
+                <Image style={{ height: 300, width: 300, borderRadius: 300 / 2, borderColor: "white", borderWidth: 1 }}
                     source={require('../assets/images/musicBackground.jpg')} />
             </View>
             <View style={styles.TrackLikeContainer}>
