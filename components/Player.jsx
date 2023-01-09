@@ -17,6 +17,8 @@ const Player = ({ LibrarySong, navigation }) => {
     const [random, setRandom] = useState(false);
     const [like, setLike] = useState(false);
     const [arr, setarr] = useState([]);
+    const [list, setlist] = useState([]);
+
     useEffect(() => {
         AsyncStorage.setItem(`${user.email}`, JSON.stringify(arr)).catch(error => {
             console.log(error);
@@ -44,6 +46,19 @@ const Player = ({ LibrarySong, navigation }) => {
                 console.log("track title", pos.title)
                 setTrack(pos.title);
             };
+            AsyncStorage.getItem(`${user.email}`)
+            .then((arrayString) => {
+                const array = JSON.parse(arrayString);
+                setlist(array);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            for (let i = 0; i < list.length; i++) {
+            if (list[i].title === trackLib.title) {
+                setLike(!like);
+            }
+            }
             getName();
         }
     }, [LibrarySong]);
@@ -111,48 +126,40 @@ const Player = ({ LibrarySong, navigation }) => {
     }
     const liked = async () => {
         const trackLib = {
-            id: `Song${LibrarySong.title}`,
-            url: `${LibrarySong.url}`,
-            title: `${LibrarySong.title}`,
+          id: `Song${LibrarySong.title}`,
+          url: `${LibrarySong.url}`,
+          title: `${LibrarySong.title}`,
         };
         try {
-            setarr([...arr, trackLib]);
-            setLike(!like);
-            alert('song liked');
+          setarr([...arr, trackLib]);
+          setLike(!like);
+          alert("song liked");
         } catch (error) {
-            console.log(error);
+          console.log(error);
         }
-        const liked = async () => {
-            const trackLib = {
-                id: `Song${LibrarySong.title}`,
-                url: `${LibrarySong.url}`,
-                title: `${LibrarySong.title}`,
-            };
-            try {
-                setarr([...arr, trackLib]);
-                setLike(!like);
-                alert('song liked');
-            } catch (error) {
-                console.log(error);
-            }
-
-        }
-    }
-    const unlike = async () => {
+      };
+      const unlike = async () => {
         const trackLib = {
-            id: `Song${LibrarySong.title}`,
-            url: `${LibrarySong.url}`,
-            title: `${LibrarySong.title}`,
+          id: `Song${LibrarySong.title}`,
+          url: `${LibrarySong.url}`,
+          title: `${LibrarySong.title}`,
         };
         try {
-            setLike(!like);
-            setarr(arr.filter(item => item.id !== trackLib.id));
-            alert('song disliked');
+          setLike(!like);
+          setarr(arr.filter((item) => item.id !== trackLib.id));
+          alert("song disliked");
+        } catch (error) {
+          console.log(error);
         }
-        catch (error) {
-            console.log(error)
+      };
+      const likedsongs = () => {
+        if (!like) {
+          setLike(like);
         }
-    }
+        navigation.navigate('Liked Songs')
+                    
+        // then navigate to like screen
+      };
     const secondsToTime = (time) => {
         m = Math.floor(time % 3600 / 60).toString().padStart(2, '0'),
             s = Math.floor(time % 60).toString().padStart(2, '0');
@@ -184,6 +191,9 @@ const Player = ({ LibrarySong, navigation }) => {
                         <Icon name="heart" color="white" size={30} onPress={liked} />
                     )}
                 </Text>
+                <TouchableOpacity style={{ backgroundColor: "#FF9001", padding: 10, borderRadius: 10, justifyContent: "center" }} onPress={likedsongs}>
+                    <Text style={{ color: "white", fontWeight: "900" }}>Liked</Text>
+                </TouchableOpacity>
             </View>
             <View>
                 <Slider

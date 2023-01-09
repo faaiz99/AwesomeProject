@@ -21,7 +21,7 @@ const Signup = ({ navigation }) => {
 
   const createUser = () => {
     auth()
-      .createUserWithEmailAndPassword(getEmail, getPassword)
+      .createUserWithEmailAndPassword(getEmail, getPassword,username)
       .then(() => {
         console.log('User account created & signed in!');
         setUsername('');

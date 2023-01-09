@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LikedSongs from './screens/LikedSongs';
 import ListPlaylist from './components/ListPlaylist'
 import PlayList from './components/Playlist'
+import Player from './components/Player';
 
 
 const Stack = createNativeStackNavigator();
@@ -38,7 +39,6 @@ const App = () => {
             display: "none"
           },
         }} name="Root" component={Root} />
-
         <Stack.Screen options={{
           headerShown: false,
           tabBarStyle: {
@@ -69,12 +69,13 @@ const App = () => {
             display: "none"
           },
         }} name="Playlist" component={PlayList} />
-          <Stack.Screen options={{
+          {/* <Stack.Screen options={{
           headerShown: false,
           tabBarStyle: {
             display: "none"
           },
-        }} name="LikedSongs" component={LikedSongs} />        
+        }} name="Player" component={Player} />  */}
+               
 
       </Stack.Navigator>
     </NavigationContainer>

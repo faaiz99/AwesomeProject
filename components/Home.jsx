@@ -26,8 +26,8 @@ const Home = ({ navigation, route }) => {
                 <TouchableOpacity style={{ backgroundColor: "#015D57", padding: 10, borderRadius: 10, justifyContent: "center" }}>
                     <Text style={{ color: "white", fontWeight: "900" }}>Playlists</Text>
                 </TouchableOpacity>
-            </View>
-      <Player LibrarySong = {route.params} />
+        </View>
+      <Player LibrarySong = {route.params} navigation={navigation} />
     </View>
   )
 }
