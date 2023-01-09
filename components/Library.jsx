@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect} from 'react';
+
 import {
   View,
   Text,
@@ -17,6 +18,7 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
+
 export default function Library({ navigation, route }) {
   const [songsList, setSongsList] = useState([]);
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function Library({ navigation, route }) {
     };
     populate();
   }, [songsList]);
+
 
   const playSong = async (name, path, mtime) => {
     TrackPlayer.reset();
@@ -60,7 +63,7 @@ export default function Library({ navigation, route }) {
     navigation.navigate('ListPlaylists', { songsQueue: songsArray });
   };
   return (
-    <View style={styles.container}>      
+    <View style={styles.container}>
     <Button title="Playlists" onPress={playlist} />
       <StatusBar animated={true} backgroundColor="#191414" />
       <FlatList

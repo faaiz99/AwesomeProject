@@ -13,6 +13,7 @@ import TrackPlayer, {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.updateOptions({
         android: {
+          stoppingAppPausesPlayback: true,
           appKilledPlaybackBehavior:
             AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
         },
@@ -29,6 +30,12 @@ import TrackPlayer, {
           Capability.Play,
           Capability.Pause,
           Capability.SkipToNext,
+        ],
+        notificationCapabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
         ],
         progressUpdateEventInterval: 2,
       });
