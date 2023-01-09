@@ -1,13 +1,13 @@
-import { View, Text, StyleSheet, PermissionsAndroid, Alert, TouchableOpacity, Animated, Easing, Image } from 'react-native'
-import React, { useEffect, useState, } from 'react'
+import { View, Text, StyleSheet, PermissionsAndroid, Alert, TouchableOpacity, Animated, Easing, Image, Button } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import { useProgress } from 'react-native-track-player';
-import TrackPlayer, { RepeatMode, PlaybackTrackChangedEvent } from 'react-native-track-player';
+import TrackPlayer, { RepeatMode } from 'react-native-track-player';
 import { SetupService } from '../setupPlayer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Share from 'react-native-share'
 const Player = ({ LibrarySong, navigation }) => {
     const [track, setTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -26,36 +26,33 @@ const Player = ({ LibrarySong, navigation }) => {
     useEffect(() => {
         if (LibrarySong) {
             const trackLib = {
-              id: `${LibrarySong.title}`,
-              url: `${LibrarySong.url}`,
-              title: `${LibrarySong.title}`,
-              mtime: `${LibrarySong.mtime}`,
+                id: `${LibrarySong.title}`,
+                url: `${LibrarySong.url}`,
+                title: `${LibrarySong.title}`,
+                mtime: `${LibrarySong.mtime}`,
             };
             TrackPlayer.add(LibrarySong.songsQueue);
-      
             setIsPlaying(true);
             const index = LibrarySong.songsQueue.findIndex(
-              (song) => song.title === LibrarySong.title
+                (song) => song.title === LibrarySong.title
             );
             TrackPlayer.skip(index);
             TrackPlayer.play();
             const getName = async () => {
-              var title = await TrackPlayer.getCurrentTrack();
-              var pos = await TrackPlayer.getTrack(title);
-              setTrack(pos.title);
+                var title = await TrackPlayer.getCurrentTrack();
+                var pos = await TrackPlayer.getTrack(title);
+                console.log("track title", pos.title)
+                setTrack(pos.title);
             };
             getName();
-          }
-    }, [PlaybackTrackChangedEvent, LibrarySong]);
+        }
+    }, [LibrarySong]);
     useEffect(() => {
         async function run() {
-            if(!isPlayerReady){
+            if (!isPlayerReady) {
                 const isSetup = await SetupService();
                 setIsPlayerReady(isSetup)
             }
-            var title = await TrackPlayer.getCurrentTrack();
-            var pos = await TrackPlayer.getTrack(title);
-            setTrack(pos.title)
             if (Platform.OS === 'android') {
 
                 isReadGranted = await PermissionsAndroid.request(
@@ -162,8 +159,18 @@ const Player = ({ LibrarySong, navigation }) => {
 
         return m + ':' + s;
     }
+    const onShareAudio = useCallback(function () {
+        console.log(LibrarySong.url)
+        Share.open({
+            title: "Share Song",
+            message: `${LibrarySong.title}`,
+            url: `${LibrarySong.url}`,
+            type: 'audio/mp3',
+        });
+    }, []);
     return (
         <View>
+            <Button title='Share' onPress={onShareAudio} />
             <View style={styles.musicBackground}>
                 <Image style={{ height: 300, width: 300, borderRadius: 300 / 2, borderColor: "white", borderWidth: 1 }}
                     source={require('../assets/images/musicBackground.jpg')} />
