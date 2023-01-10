@@ -1,4 +1,4 @@
-import {View, Text, Button, FlatList, ActivityIndicator} from 'react-native';
+import {View, Text, Button, FlatList} from 'react-native';
 import React from 'react';
 import {useState, useEffect} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -12,15 +12,6 @@ export default Playlist = ({navigation, route}) => {
     setPlaylistName(name);
     setSongsArray(songsQueue);
   });
-
-  const test = () => {
-    // console.log('playlist.name: ', playlist.name);
-    // console.log('Songs Array: ', playlist.songsQueue);
-    // setPlaylistName(name);
-    // setSongsArray(songsQueue);
-    console.log('name: ', name);
-    console.log('Songs Queue: ', songsQueue);
-  };
 
   const storeData = () => {
     return <View> </View>;

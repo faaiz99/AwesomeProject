@@ -6,10 +6,11 @@ import {
   StyleSheet,
   TextInput,
   ImageBackground,
-  StatusBar
+  StatusBar,
+  ToastAndroid
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
@@ -22,10 +23,10 @@ export default Signin = ({ navigation }) => {
   const [getPassword, setPassword] = useState("")
   const [visible, setVisible] = useState(true)
 
-useEffect(()=>{
-  SystemNavigationBar.setNavigationColor('black');
-})
   const loginUser = () => {
+    if(getEmail.length==0 || getPassword.length==0){
+      ToastAndroid.show("Email or Password is empty", ToastAndroid.LONG);
+    }
     auth()
       .signInWithEmailAndPassword(getEmail, getPassword)
       .then(() => {
@@ -35,15 +36,15 @@ useEffect(()=>{
         navigation.navigate("Root")
       })
       .catch(error => {
-        console.error(error);
+        ToastAndroid.show(error, ToastAndroid.LONG);
       });
   }
   return (
     <View style={{ flexDirection: 'column' }}>
-      <StatusBar
+                 <StatusBar
         animated={true}
-        backgroundColor="black" />
-      <View style={{ backgroundColor: 'orange', height: '35%' }}>
+        backgroundColor="black"/>
+      <View style={{ height: '35%' }}>
         <ImageBackground
           style={{ flex: 1, height: '100%', width: '100%' }}
           source={require('../assets/images/Header.jpg')}>
@@ -64,32 +65,35 @@ useEffect(()=>{
           <View style={{ width: '100%' }}>
             <View style={styles.box}>
               <TouchableOpacity>
-                {/* <Text>Email Address:</Text> */}
                 <TextInput
-                  placeholder="Email Address:"
+                  placeholder="Email Address"
                   onChangeText={e => setEmail(e)}></TextInput>
               </TouchableOpacity>
             </View>
             <View style={styles.box}>
               <TouchableOpacity>
                 <TextInput
-                  placeholder="Password:"
+                  placeholder="Password"
                   secureTextEntry={visible}
                   onChangeText={e => setPassword(e)}></TextInput>
-                <Icon name='eye' size={15} color="white" onPress={() => setVisible(!visible)} style={{
+                 {!visible?   <Icon name='eye' size={15} color="black" onPress={() => setVisible(!visible)} style={{
                   position: 'absolute',
                   right: 20,
                   marginTop: 15
-                }} />
+                }} />: <Icon name='eye-slash' size={15} color="black" onPress={() => setVisible(!visible)} style={{
+                  position: 'absolute',
+                  right: 20,
+                  marginTop: 15
+                }} />}
               </TouchableOpacity>
             </View>
             <View style={styles.text}>
-              <Text style={{ color: '#1DB954' }} onPress={() => navigation.navigate('Forgot Password')}>Forget Password?</Text>
+              <Text style={{ color: '#1DB954', fontWeight: "bold" }} onPress={()=>navigation.navigate('Forgot Password')}>Forget Password?</Text>
             </View>
           </View>
           <View style={styles.button}>
             <TouchableOpacity onPress={loginUser}>
-              <Text style={{ textAlign: 'center', color: "white", fontWeight: "900" }}>Sign in</Text>
+              <Text style={{ textAlign: 'center', color: "white", fontWeight: "900", fontSize:20 }}>Sign in</Text>
             </TouchableOpacity>
           </View>
 
@@ -114,32 +118,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: '1%',
   },
-
   container2: {
     display: 'flex',
     backgroundColor: 'red',
   },
-
   container3: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '80%',
   },
-
   box: {
-    backgroundColor: 'gray',
+    backgroundColor: '#bababa',
     width: '100%',
     marginTop: '7%',
     padding: '2%',
     borderRadius: 10,
     height: '24%',
   },
-
   text: {
     alignItems: 'flex-end',
     marginTop: '2%',
   },
-
   button: {
     backgroundColor: '#1DB954',
     padding: '4%',
@@ -148,7 +147,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   textView: {
     position: 'absolute',
     justifyContent: 'flex-end',

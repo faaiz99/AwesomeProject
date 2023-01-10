@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   TouchableOpacity,
   View,
@@ -30,12 +30,12 @@ const ForgotPassword = ({ navigation }) => {
       );
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     SystemNavigationBar.setNavigationColor('black');
   })
   return (
     <View height="100%" width="100%" style={{ backgroundColor: 'black' }}>
-          <StatusBar
+      <StatusBar
         animated={true}
         backgroundColor="black" />
       <Image
@@ -54,7 +54,7 @@ const ForgotPassword = ({ navigation }) => {
         <View style={{ justifyContent: 'space-evenly' }}>
           <View
             style={{
-              backgroundColor: 'gray',
+              backgroundColor: '#bababa',
               color: 'white',
               borderRadius: 10,
               padding: 5,
@@ -64,28 +64,34 @@ const ForgotPassword = ({ navigation }) => {
             }}>
             <TextInput placeholder='Email' style={{ borderColor: 'transparent' }} onChangeText={(e) => setEmail(e)} />
           </View>
+          <View style={{ alignItems: "center" }}>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#1DB954',
-              marginTop: 80,
-              marginLeft: 60,
-              marginRight: 60,
-              padding: '4%',
-              borderRadius: 10,
-              width: '70%',
-            }}
-            onPress={() => resetPassword()}>
-            <Text
+            <TouchableOpacity
               style={{
-                textAlign: 'center',
-                color: 'white',
-                fontWeight: '900',
-      
-              }}>
-              Reset Password
-            </Text>
-          </TouchableOpacity>
+                backgroundColor: '#1DB954',
+                marginTop: 100,
+                marginLeft: 60,
+                marginRight: 60,
+                padding: '4%',
+                borderRadius: 10,
+                width: '50%',
+                justifyContent: "center",
+
+              }}
+              onPress={() => resetPassword()}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: 'white',
+                  fontWeight: '900',
+
+                }}>
+                Reset Password
+              </Text>
+            </TouchableOpacity>
+
+          </View>
+
         </View>
       </ScrollView>
     </View>

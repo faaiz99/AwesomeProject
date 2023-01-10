@@ -13,7 +13,7 @@ import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-const Signup = ({ navigation }) => {
+export default Signup = ({ navigation }) => {
   const [getEmail, setEmail] = useState('');
   const [getPassword, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -53,7 +53,7 @@ const Signup = ({ navigation }) => {
           style={{ flex: 1, height: '100%', width: '100%' }}
           source={require('../assets/images/Header.jpg')}>
           <View style={styles.textView}>
-            <Text style={{ color: 'white', fontSize: 30 }}>Sign Up</Text>
+            <Text style={{ color: 'white', fontSize: 30, fontWeight: "900" }}>Sign Up</Text>
             <Text style={{ color: 'white' }}>
               Welcome Back! Which will accompany your
             </Text>
@@ -66,7 +66,7 @@ const Signup = ({ navigation }) => {
 
       <View style={styles.container1}>
         <View style={styles.container3}>
-          <View style={{ width: '100%' }}>
+          <View style={{ width: '100%'}}>
             <View style={styles.box}>
               <TouchableOpacity>
                 <TextInput
@@ -76,7 +76,6 @@ const Signup = ({ navigation }) => {
             </View>
             <View style={styles.box}>
               <TouchableOpacity>
-                {/* <Text>Email Address:</Text> */}
                 <TextInput
                   placeholder="Email Address:"
                   onChangeText={e => setEmail(e)}></TextInput>
@@ -88,24 +87,28 @@ const Signup = ({ navigation }) => {
                   placeholder="Password:"
                   secureTextEntry={visible}
                   onChangeText={e => setPassword(e)}></TextInput>
-                <Icon name='eye' size={15} color="black" onPress={() => setVisible(!visible)} style={{
+                  {!visible?   <Icon name='eye' size={15} color="black" onPress={() => setVisible(!visible)} style={{
                   position: 'absolute',
                   right: 20,
                   marginTop: 15
-                }} />
+                }} />: <Icon name='eye-slash' size={15} color="black" onPress={() => setVisible(!visible)} style={{
+                  position: 'absolute',
+                  right: 20,
+                  marginTop: 15
+                }} />}
+              
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.button}>
             <TouchableOpacity onPress={createUser}>
-              <Text style={{ textAlign: 'center', color: "white", fontWeight: "900" }}>Sign up</Text>
+              <Text style={{ textAlign: 'center', color: "white", fontWeight: "900", fontSize:20}}>Sign up</Text>
             </TouchableOpacity>
           </View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={{ color: 'white' }}>Already have an account? </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'center',}}>
+            <Text style={{ color: 'white', marginTop:10 }}>Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={{ color: '#1DB954', fontWeight: "bold" }}> Sign in</Text>
+              <Text style={{ color: '#1DB954', fontWeight: "bold",  marginTop:10 }}> Sign in</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -135,12 +138,13 @@ const styles = StyleSheet.create({
   },
 
   box: {
-    backgroundColor: 'gray',
+    backgroundColor: '#bababa',
     width: '100%',
     marginTop: '7%',
     padding: '2%',
     borderRadius: 10,
-    height: '19%',
+    height: '18%',
+
   },
 
   text: {
@@ -155,6 +159,7 @@ const styles = StyleSheet.create({
     width: '70%',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:5
   },
 
   textView: {
@@ -168,5 +173,3 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 });
-
-export default Signup

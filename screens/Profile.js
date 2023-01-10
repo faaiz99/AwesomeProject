@@ -1,8 +1,5 @@
-import storage, {
-  firebase,
-} from '@react-native-firebase/storage';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -10,21 +7,23 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
-  ImageBackground,
+  StatusBar,
+  StyleSheet
 } from 'react-native';
-
+import storage, { firebase } from '@react-native-firebase/storage';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 import DocumentPicker from 'react-native-document-picker';
 import auth from '@react-native-firebase/auth';
 
+
 export default function Profile() {
   const [isEditable, setIsEditable] = useState(false);
-  const updateState = () => {
-    setIsEditable(!isEditable);
-  };
   const [imageUrl, setImageUrl] = useState();
   const [username, setusername] = useState('');
-
+  const [pathUpload, setpathUpload] = useState('')
+  let user1 = auth().currentUser;
   useEffect(() => {
+    SystemNavigationBar.setNavigationColor('black');
     const func = async () => {
       const ref = firebase.storage().ref(user1.email);
       const url = await ref.getDownloadURL();
@@ -37,8 +36,9 @@ export default function Profile() {
     SystemNavigationBar.setNavigationColor('black');
   })
   let result;
-
-  let user1 = auth().currentUser;
+  const updateState = () => {
+    setIsEditable(!isEditable);
+  };
   const reference = storage().ref(user1.email);
   const openDocument = async () => {
     result = await DocumentPicker.pick({
@@ -49,6 +49,7 @@ export default function Profile() {
 
     const response = await fetch(result.uri);
     console.log('response: ', response);
+    setpathUpload(response)
     const file = await response.blob([response.value], {
       type: 'jpg/png/jpeg',
     });
@@ -65,15 +66,16 @@ export default function Profile() {
   const uploadPicture = async () => {
     // path to existing file on filesystem
     console.log('Path', result[0].uri);
+
     const pathToFile = result[0].fileCopyUri;
     console.log('pathtofile: ', pathToFile);
+   
     // uploads file
     await reference.putFile(pathToFile);
     const ref = firebase.storage().ref(user1.email);
     const url = await ref.getDownloadURL();
     setImageUrl(url);
   };
-
   const AddUsername = async () => {
     if (username && username.length > 0) {
       const update = {
@@ -89,97 +91,29 @@ export default function Profile() {
       setusername('');
     }
   };
-
   return (
     <View
-      style={{
-        flex: 1,
-        backgroundColor: 'black',
-      }}>
-      <View style={{ flexDirection: 'row' }}>
+      style={styles.container}>
+      <StatusBar animated={true} backgroundColor="black" />
+      <View style={styles.imageContainer}>
         <Image
-          height="20"
-          width="20"
-          style={{ marginLeft: '8%', marginTop: '7%' }}
-          source={require('../assets/images/back.png')}></Image>
-        <TouchableOpacity onPress={() => setShouldShow(true)}>
-          <ImageBackground
-            onLoadStarts={() => {
-              return <ActivityIndicator />;
-            }}
-            style={{
-              height: 200,
-              width: 200,
-              marginTop: '5%',
-              marginLeft: '11%',
-            }}
-            imageStyle={{ borderRadius: 100 }}
-            source={{
-              uri: imageUrl,
-            }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#ededeb',
-                alignSelf: 'center',
-                width: '60%',
-                borderRadius: 10,
-                margin: '50%',
-                marginBottom: '0%',
-              }}
-              onPress={() => openDocument()}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontWeight: '500',
-                  color: 'black',
-                  fontSize: 18,
-                }}>
-                Choose a picture
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#ededeb',
-                alignSelf: 'center',
-                width: '70%',
-                borderRadius: 10,
-                margin: '25%',
-                marginTop: '5%',
-              }}
-              onPress={() => uploadPicture()}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontWeight: '500',
-                  color: 'black',
-                  fontSize: 18,
-                }}>
-                Upload the Picture
-              </Text>
-            </TouchableOpacity>
-          </ImageBackground>
-        </TouchableOpacity>
+          onLoadStarts={() => { return <ActivityIndicator color="white" />; }}
+          style={styles.displayPicture}
+          source={{
+            uri: imageUrl,
+          }}>
+        </Image>
       </View>
+      <Text style={{ marginTop:10,textAlign: 'center', color: "white", fontWeight: "900", fontSize:20 }} >Username: {user1.displayName}</Text>
       <View
         style={{
-          backgroundColor: 'grey',
+          alignSelf:"center",
+          backgroundColor: '#bababa',
           color: 'white',
-          borderRadius: 20,
-          padding: 5,
-          margin: 30,
-          marginTop: '10%',
-          marginBottom: 0,
+          borderRadius: 10,
+          width:"80%",
+          marginTop: '3%',
         }}>
-        <Text
-          style={{
-            color: 'black',
-            fontWeight: '600',
-            marginLeft: 13,
-            fontSize: 20,
-          }}>
-          Username:
-        </Text>
-
         <TouchableOpacity onPress={updateState}>
           <TextInput
             placeholder={isEditable ? 'Enter a new Username' : ''}
@@ -187,7 +121,7 @@ export default function Profile() {
             style={{
               borderColor: isEditable ? 'black' : 'red',
               Color: isEditable ? 'black' : 'red',
-              backgroundColor: 'grey',
+              backgroundColor: ' #bababa',
               fontSize: 16,
               margin: 10,
               marginBottom: 0,
@@ -199,26 +133,90 @@ export default function Profile() {
           </TextInput>
         </TouchableOpacity>
       </View>
+      <View style={{ justifyContent: "center", flexDirection: "row", marginTop: 50 }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#1DB954',
+            borderRadius: 10,
+            width: '50%',
+            padding:10
+          }}
+          onPress={() => AddUsername()}>
+          <Text
+            style={{
+              textAlign: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 20,
+            }}>
+            Save
+          </Text>
+        </TouchableOpacity>
+
+      </View>
+      <View>
       <TouchableOpacity
         style={{
-          backgroundColor: 'brown',
+          backgroundColor: '#1DB954',
           alignSelf: 'center',
-          padding: 5,
-          marginTop: '5%',
+          width: '50%',
+          padding:10,
           borderRadius: 10,
+          marginTop:"20%"
+
         }}
-        onPress={() => AddUsername()}>
+        onPress={() => openDocument()}>
         <Text
           style={{
             textAlign: 'center',
+            fontWeight: 'bold',
             color: 'white',
-            fontWeight: '600',
             fontSize: 20,
-            padding: 10,
           }}>
-          Update Username
+          Choose picture
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#1DB954',
+          alignSelf: 'center',
+          width: '50%',
+          borderRadius: 10,
+          padding:10,
+          marginTop:"20%"
+        }}
+        onPress={() => uploadPicture()}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: 'white',
+            fontSize: 20,
+          }}>
+          Upload Picture
+        </Text>     
+      </TouchableOpacity>
+      {/* <Image
+         style={{height:100, width:100}}
+         source={{
+           uri: pathUpload,
+         }}>
+       </Image> */}
+      </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    justifyContent: "center"
+  },
+  displayPicture: {
+    height: 200,
+    width: 200,
+  },
+})
